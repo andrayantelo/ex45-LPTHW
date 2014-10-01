@@ -37,7 +37,10 @@ class Player(object):
         return self.items
     
     def display_items(self):
+        print "You currently have the following items:"
         print self.items
+        
+
             
 class Scene(object):
     
@@ -91,17 +94,17 @@ class Introduction(Scene):
     
     def __init__(self):
         self.intro_text = textwrap.dedent(
-        """ Once upon a time there lived a little black and white dog
+        """\n\n
+        Once upon a time there lived a little black and white dog
         named Piet. He was a small poodle/schnauzer mix with soft curly
         fur and a big heart. He had two lovely owners who loved him very
         much. Piet was very protective of his owners and his friends. He 
         was a very loyal dog. Some say, he was the most loyal dog in the 
-        world.
-        """)
+        world.""")
         
     def enter(self, player):
         player.health_status()
-        print piet.items
+        player.display_items()
         cool_print(self.intro_text)
         
         command = raw_input("\n> ")
@@ -112,7 +115,8 @@ class LivingRoom(Scene):
     
     def __init__(self):
         self.living_text = textwrap.dedent(
-        """ One lovely Sunday morning, Piet was napping peacefully 
+        """ \n
+        One lovely Sunday morning, Piet was napping peacefully 
         in his dog bed dreaming about the dog park. He jolted awake when 
         he heard the sound of house keys jingling and ran towards
         the front door. The door clicked shut softly just as he got there
@@ -122,21 +126,25 @@ class LivingRoom(Scene):
         then noticed that his owner had forgotten his wristwatch.
         """)
         self.sleep_text = textwrap.dedent(
-        """ Piet whimpered at the door a little bit. Then he curled up into
+        """ \n
+        Piet whimpered at the door a little bit. Then he curled up into
         a little ball and shut his eyes. 'Maybe if I go to sleep the time
         will go faster and when I wake up they will be home,' he thought as
         he drifted off to sleep.
         """)
         self.play_text = textwrap.dedent(
-        """ Piet attacks his chew toy and plays with it a little. Then
+        """ \n
+        Piet attacks his chew toy and plays with it a little. Then
         he gets bored and looks back at the front door.
         """)
         self.scratch_text = textwrap.dedent(
-        """ Piet scratches at the door but gets tired of it quickly. He
+        """ \n
+        Piet scratches at the door but gets tired of it quickly. He
         already knew that didn't bring his owners back.
         """)
         self.lookaround_text = textwrap.dedent(
-        """ Piet looks around the living room and notices that the window
+        """ \n
+        Piet looks around the living room and notices that the window
         looking out at the backyard is open. Piet's ears perk up as he runs
         over to the window. He stops short in front of the window and looks 
         out hesitantly. A soft cool breeze beckons him and he could hear birds
@@ -148,7 +156,8 @@ class LivingRoom(Scene):
         the open window.
         """)
         self.sniff_text = textwrap.dedent(
-        """ Piet sniffs around the living room and finds a med pack hidden
+        """ \n
+        Piet sniffs around the living room and finds a med pack hidden
         behind the couch. He places it in his purse.
         """)
     
@@ -156,7 +165,8 @@ class Backyard(Scene):
     
     def __init__(self):
         self.backyard_text = textwrap.dedent(
-        """ Piet lands clumsily on his four paws and looks back up at the
+        """ \n
+        Piet lands clumsily on his four paws and looks back up at the
         open window. The window is low enough to the ground that he could
         easily go back inside if he wanted to. Piet feels reassured at this
         thought as he turns around to face the backyard. The backyard is 
@@ -172,7 +182,8 @@ class Backyard(Scene):
         at Piet with wide eyes.
         """)
         self.fight_text = textwrap.dedent(
-        """ Piet may be small but he thinks he is the biggest dog in the world.
+        """ \n
+        Piet may be small but he thinks he is the biggest dog in the world.
         'I can take that cat,' Piet thinks arrogantly to himself. Piet puffs 
         up his chest and lets out a loud bark. The cat looks at him incredulously,
         as if it's about to laugh. Then charges Piet, claws out. Piet lets 
@@ -181,7 +192,8 @@ class Backyard(Scene):
         the cat gets bored and leaves Piet alone to die.
         """)
         self.run_text = textwrap.dedent(
-        """ Piet decides to run past the cat. Piet is one of the fastest 
+        """ \n
+        Piet decides to run past the cat. Piet is one of the fastest 
         dogs in the neighborhood, frequently outrunning other dogs at the
         dog park. His owners also liked to take him jogging with them which
         kept Piet in tip top shape! Piet began to run towards the cat, which 
@@ -192,14 +204,16 @@ class Backyard(Scene):
         the neighbor's yard.
         """)
         self.go_inside_text = textwrap.dedent(
-        """ Piet jumps back inside through the open window. The cat looks 
+        """ \n
+        Piet jumps back inside through the open window. The cat looks 
         at Piet for a minute safely inside then curls up and lays down in 
         the grass staring at Piet. Piet realizes the cat was going to stay
         there all day waiting for him. 
         """
         )
         self.nothing_text = textwrap.dedent(
-        """Piet stands in front of the cat frozen in fear. The cat swipes
+        """ \n
+        Piet stands in front of the cat frozen in fear. The cat swipes
         at Piet with its claws. Piet yelps as the cat continues to swipe.
         Eventually, the cat leaves Piet alone to die.
         """)
@@ -209,7 +223,8 @@ class EnchantedForest(Scene):
     
     def __init__(self):
         self.enchanted_text = textwrap.dedent(
-        """ On the other side of the fence Piet finds himself at the border
+        """ \n
+        On the other side of the fence Piet finds himself at the border
         of the Enchanted Forest. All the dogs referred to the forest as The
         Enchanted Forest on account of all the strange things that happened
         to the dogs that dared to enter it alone, but he had often heard 
@@ -219,23 +234,28 @@ class EnchantedForest(Scene):
         there and he needed to bring them their forgotten wristwatch!
         """)
         self.go_back_text = textwrap.dedent(
-        """ Piet turns around and heads back inside like a coward. The cat
+        """ \n
+        Piet turns around and heads back inside like a coward. The cat
         was no longer in the yard. Who knew where his owners were. Piet 
         sat down and cried.
         """)
         self.go_forward_text = textwrap.dedent(
-        """ 'I will find my owners!' Piet thinks to himself, determined to
+        """ \n
+        'I will find my owners!' Piet thinks to himself, determined to
         find them. Piet enters the Enchanted Forest and walks along the dirt
         past trees and shrubs. Eventually he reaches a large clearing.
         """)
         self.sniff_text = textwrap.dedent(
-        """ Piet finds a med pack nestled in the dirt.""")
+        """ 
+        Piet finds a med pack nestled in the dirt.""")
         self.lookaround_text = textwrap.dedent(
-        """ Piet notices something shiny near some rocks. It's a small
+        """ \n
+        Piet notices something shiny near some rocks. It's a small
         sword with a handle shaped perfectly to be held in a dog's mouth.
         """)
         self.bark_text = textwrap.dedent(
-        """ Piet barks three times and waits. At first he does not hear 
+        """ \n
+        Piet barks three times and waits. At first he does not hear 
         anything and then he hears a loud hissing. His barking has attracted
         a large Coral Snake!
         """)
@@ -245,11 +265,13 @@ class Tunnel(Scene):
     
     def __init__(self):
         self.tunnel_text = textwrap.dedent(
-        """ The clearing is large and covered in dirt and shrubs. Piet sees
+        """ \n
+        The clearing is large and covered in dirt and shrubs. Piet sees
         a small tunnel to the left and a dirt trail on the right.
         """)
         self.enter_tunneltext = textwrap.dedent(
-        """ Piet walks over to the entrance of a tunnel. A loud squawk sound
+        """ \n
+        Piet walks over to the entrance of a tunnel. A loud squawk sound
         makes Piet freeze in his tracks. A large hawk swoops down and blocks
         the tunnel entrance. Piet swallows audibly and takes a
         step back. 'If you wish to use the tunnel you must correctly solve 
@@ -259,7 +281,8 @@ class Tunnel(Scene):
         as Piet looks at it stumped.
         """)
         self.trail_text = textwrap.dedent(
-        """ Piet heads over to the trail and begins to follow it. He 
+        """ \n
+        Piet heads over to the trail and begins to follow it. He 
         sniffs the ground as he walks but does not smell anything familiar. All 
         the smells were very interesting, of course, but nothing smelled
         remotely like his owners. Piet trudged along for what seemed like 
@@ -271,21 +294,24 @@ class Tunnel(Scene):
         back the way he came.
         """)
         self.correct_guess = textwrap.dedent(
-        """ The hawk squealed in excitement. 'That's a first!' He squawked
+        """ \n
+        The hawk squealed in excitement. 'That's a first!' He squawked
         as he tossed something at Piet. Piet sniffed at it. It was a small 
         head lamp, and it fit perfectly around Piet's head. 'Thanks, Mr. 
         Hawk,' Piet said politely. The Hawk rolled it's eyes and stepped 
         aside so that Piet could enter the dark tunnel. 
         """)
         self.wrong_guess = textwrap.dedent(
-        """ 'Sorry, Dog, that's the wrong answer!' The hawk cackles. Then 
+        """ \n
+        'Sorry, Dog, that's the wrong answer!' The hawk cackles. Then 
         he swoops in and grabs Piet with his enormous claws. Piet shrieks
         as the hawk carries him off to a large nest where hungry baby hawks
-        were waiting.
+        are waiting.
         """)
         
         self.inside_tunnel = textwrap.dedent(
-        """ Piet switches on his headlamp and advances into the tunnel. It 
+        """ \n
+        Piet switches on his headlamp and advances into the tunnel. It 
         was pitch black in there. Piet felt relieved that the hawk had given
         him the lamp. He walks cautiously inside the tunnel but did not see 
         much besides a couple of rocks. Slowly, Piet begins to run a little bit. 
@@ -300,7 +326,8 @@ class Tunnel(Scene):
         Piet looks at it in horror.
         """)
         self.use_sword = textwrap.dedent(
-        """ Piet pulls out his sword and grips it in his mouth. He takes
+        """ \n
+        Piet pulls out his sword and grips it in his mouth. He takes
         a swipe at the spider and cuts off one of the spider's legs. With
         renewed confidence Piet swipes left and right with the sword. The 
         spider did not know what to make of it. A dog with a sword? It had
@@ -309,7 +336,8 @@ class Tunnel(Scene):
         put the sword away and sprinted like his life depended on it to the 
         end of the tunnel.""")
         self.fight = textwrap.dedent(
-        """ Piet had nothing useful to use as a weapon. Piet barks loudly 
+        """ \n
+        Piet had nothing useful to use as a weapon. Piet barks loudly 
         but the spider is unfazed. The spider begins to advance. Piet lunges
         forward and bites into one of the spider's legs. He clamps down with
         his jaws and does not let go. The spider shrieks in pain and tries
@@ -325,7 +353,8 @@ class EnchantedForestPartTwo(Scene):
     
     def __init__(self):
         self.go_forward_text = textwrap.dedent(
-        """ Piet decides to continue following the trail. Piet walks and 
+        """ \n
+        Piet decides to continue following the trail. Piet walks and 
         walks all day long. At one point he passes a small creek he gets
         a drink of water. Suddenly, Piet hears running footsteps.
         He could tell they were human. Piet runs towards the sound and comes
@@ -342,7 +371,8 @@ class EnchantedForestPartTwo(Scene):
         barked excitedly and spun around in a circle. He was going home.
         """)
         self.go_back_text = textwrap.dedent(
-        """ Piet turns around and heads back. Who knows how long that trail 
+        """ \n
+        Piet turns around and heads back. Who knows how long that trail 
         would go for. He couldn't even smell his owners on it anyway.
         """)
         self.sniff_text = textwrap.dedent(
@@ -354,22 +384,26 @@ class River(Scene):
     
     def __init__(self):
         self.river_text = textwrap.dedent(
-        """ Piet emerges from the tunnel into the blinding sunlight. He shuts
+        """ \n
+        Piet emerges from the tunnel into the blinding sunlight. He shuts
         his headlamp off and puts it away in his purse. He has emerged into a
         very small clearing with a river right in front of him.
         """)
         self.swim_text = textwrap.dedent(
-        """ Piet leaps into the water and begins to swim across. The current
+        """ \n
+        Piet leaps into the water and begins to swim across. The current
         was really strong and Piet struggled to swim to the other side. Eventually,
         Piet had no strength left and he let the river carry him far far away.
         Piet was never to be seen or heard of again. 
         """)
         self.lookaround_text = textwrap.dedent(
-        """ Piet looks around and finds a small dog size boat anchored to 
+        """ \n
+        Piet looks around and finds a small dog size boat anchored to 
         the river bed.
         """)
         self.use_boat = textwrap.dedent(
-        """ Piet leaps into the boat pulls up the anchor. Then he grabs a 
+        """ \n
+        Piet leaps into the boat pulls up the anchor. Then he grabs a 
         paddle with his mouth and begins to paddle across the river.
         """)
         self.drink_water = textwrap.dedent(
@@ -380,14 +414,16 @@ class DogPark(Scene):
     
     def __init__(self):
         self.dogpark_text = textwrap.dedent(
-        """ Piet arrives on the other side of the river and sees that he has
+        """ \n
+        Piet arrives on the other side of the river and sees that he has
         reached his favorite dog park in the whole wide world. He could see dogs
         running around playing with their owners. In his excitement, he jumps 
         out of the boat before anchoring it. The boat floats away but Piet
         was too distracted by all the other dogs to notice or care.
         """)
         self.play_text = textwrap.dedent(
-        """ Piet sniffs at the nearest dogs and begins to play with them. 
+        """ \n
+        Piet sniffs at the nearest dogs and begins to play with them. 
         He is having so much fun he forgets all about his owners. Eventually, 
         the humans begin to notice that Piet is there all by himself. One 
         human takes it upon herself to make sure Piet gets home. She takes a 
@@ -400,7 +436,8 @@ class DogPark(Scene):
         then he picks Piet up and they go back home.
         """)
         self.lookaround_text = textwrap.dedent(
-        """ Piet looks around and sees a dog treat nestled in the grass.
+        """ \n
+        Piet looks around and sees a dog treat nestled in the grass.
         He gobbles it up hungrily.
         """)
         
