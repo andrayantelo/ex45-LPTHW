@@ -3,6 +3,7 @@
 import sys
 import textwrap
 import time
+import keywords
 
 def cool_print(text):
     for i in text: 
@@ -488,6 +489,7 @@ class Engine(object):
             next_scene_name = current_scene.enter(player)
             current_scene = self.scene_map.next_scene(next_scene_name)
 
+print keywords.LOOK
 piet = Player()
 a_map = Map('introduction')
 a_game = Engine(a_map)
