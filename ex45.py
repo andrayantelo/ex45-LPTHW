@@ -45,7 +45,7 @@ class Player(object):
             
 class Scene(object):
     
-    def enter(self):
+    def __init__(self):
         self.sniff_text = textwrap.dedent(
         """ Piet sniffs around a little bit.""")
         self.look_text = textwrap.dedent(
@@ -83,7 +83,7 @@ class Scene(object):
         """ There aren't any enemies for Piet to fight.""")
         self.inside_text = textwrap.dedent(
         """ Piet is already inside.""")
-        self.go_back_text = textwrap.dedent(
+        self.back_text = textwrap.dedent(
         """ It's too late to turn back now!""")
         self.forward_text = textwrap.dedent(
         """ Piet walks slowly forward.""")
@@ -101,6 +101,33 @@ class Scene(object):
         """ Why would there be a boat around?""")
         self.drink_water = textwrap.dedent(
         """ Too bad there isn\'t any water around to drink""")
+        self.command_dictionary = {}
+        
+    def parse_commands(self, command):
+        self.command_dictionary = {'sniff': self.sniff_text,
+                              'look': self.look_text,
+                              'nothing': self.nothing_text,
+                              'play': self.play_text,
+                              'dig': self.dig_text,
+                              'bark': self.bark_text,
+                              'roll': self.roll_text,
+                              'walk': self.walk_text,
+                              'run': self.run_text,
+                              'stand': self.stand_text,
+                              'find': self.find_text,
+                              'inside': self.inside_text,
+                              'back': self.back_text,
+                              'forward': self.forward_text,
+                              'items': self.display_items_text,
+                              'enter': self.enter_tunneltext,
+                              'trail': self.trail_text,
+                              'sword': self.use_sword,
+                              'swim': self.swim_text,
+                              'boat': self.use_boat,
+                              'drink': self.drink_water
+                                  }
+                          
+        print self.command_dictionary.get(command)
     
         
 class Introduction(Scene):
@@ -122,7 +149,8 @@ class Introduction(Scene):
         print "To check item inventory type \"display items\""
         command = str(raw_input("\n> "))
         
-        keywords.parse_commands(command)
+        super(Introduction, self).__init__()
+        super(Introduction, self).parse_commands(command)
         
         
         
