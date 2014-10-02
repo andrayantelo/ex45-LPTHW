@@ -108,7 +108,10 @@ class Introduction(Scene):
         player.display_items()
         cool_print(self.intro_text)
         
-        command = raw_input("\n> ")
+        command = str(raw_input("\n> "))
+        
+        if command == "yes":
+            "living_room"
         
         
         
@@ -469,29 +472,32 @@ class Map(object):
               
     def __init__(self, start_scene):
         self.start_scene = start_scene
-        
-    def next_scene(self, scene_name):
-        return Map.scenes.get(scene_name)
-        
+      
     def opening_scene(self):
-        return self.next_scene(self.start_scene)
+        self.scenes.get(self.start_scene)
+        return 
         
+    def enter(self, next_scene):
+        self.scenes.get(next_scene)
+    
     
 class Engine(object):
     
-    def __init__(self, scene_map):
-        self.scene_map = scene_map
+    def __init__(self, game_map):
+        self.game_map = game_map
         
-    def play(self, player):
-        current_scene = self.scene_map.opening_scene()
+    def play(self):
+        current_scene = self.game_map.opening_scene()
         
         while True:
-            next_scene_name = current_scene.enter(player)
-            current_scene = self.scene_map.next_scene(next_scene_name)
+            next_scene = self.game_map.enter(current_scene)
+            current_scene = next_scene
+            
 
-print keywords.LOOK
 piet = Player()
 a_map = Map('introduction')
 a_game = Engine(a_map)
-a_game.play(piet)
+#a_game.play()
 
+intro = a_map.scenes.get('introduction')
+print type(intro)
