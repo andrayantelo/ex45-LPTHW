@@ -103,7 +103,8 @@ class Scene(object):
         """ Too bad there isn\'t any water around to drink""")
         self.command_dictionary = {}
         
-    def parse_commands(self, command):
+    def parse_commands(self, sentence):
+        
         self.command_dictionary = {'sniff': self.sniff_text,
                               'look': self.look_text,
                               'nothing': self.nothing_text,
@@ -126,8 +127,11 @@ class Scene(object):
                               'boat': self.use_boat,
                               'drink': self.drink_water
                                   }
-                          
-        return self.command_dictionary.get(command)
+        for word in sentence:
+            if word in self.command_dictionary:
+                print self.command_dictionary.get(word)
+                return self.command_dictionary.get(word)
+        
     
         
 class Introduction(Scene):
@@ -148,9 +152,11 @@ class Introduction(Scene):
         
         print "To check health status type \"health status\""
         print "To check item inventory type \"display items\""
-        command = str(raw_input("\n> "))
         
-        print super(Introduction, self).parse_commands(command)
+        while True:
+            command = str(raw_input("\n> "))
+        
+            print super(Introduction, self).parse_commands(command)
         
         return 'living_room'
         
@@ -206,6 +212,7 @@ class LivingRoom(Scene):
         
     def enter(self, player):
         print "this is the living room"
+        player.health_status()
     
 class Backyard(Scene):
     
@@ -530,6 +537,8 @@ class Engine(object):
         current_scene = self.game_map.opening_scene()
         
         while True:
+            #if current_scene not in self.game_map.scenes:
+             #   raise ValueError("Scene did not return a valid next scene!")
             next_scene_name = current_scene.enter(player)
             current_scene = self.game_map.next_scene(next_scene_name)
             
