@@ -48,7 +48,7 @@ class Scene(object):
     def enter(self):
         self.sniff_text = textwrap.dedent(
         """ Piet sniffs around a little bit.""")
-        self.lookaround_text = textwrap.dedent(
+        self.look_text = textwrap.dedent(
         """ Piet looks around and sees nothing unusual.""")
         self.nothing_text = textwrap.dedent(
         """ Piet sits down and does nothing.""")
@@ -60,7 +60,7 @@ class Scene(object):
         """ Piet digs a hole in the ground and sticks his nose in it.""")
         self.bark_text = textwrap.dedent(
         """ Piet barks three times and receives no response.""")
-        self.rollover_text = textwrap.dedent(
+        self.roll_text = textwrap.dedent(
         """ Piet rolls over but there is no one around to scratch his 
         tummy.
         """)
@@ -81,14 +81,26 @@ class Scene(object):
         """ There is nothing around for Piet to scratch!""")
         self.fight_text = textwrap.dedent(
         """ There aren't any enemies for Piet to fight.""")
-        self.go_inside_text = textwrap.dedent(
+        self.inside_text = textwrap.dedent(
         """ Piet is already inside.""")
         self.go_back_text = textwrap.dedent(
         """ It's too late to turn back now!""")
-        self.go_forward_text = textwrap.dedent(
+        self.forward_text = textwrap.dedent(
         """ Piet walks slowly forward.""")
         self.display_items_text = textwrap.dedent(
         """ Piet has the following items in his possesion: """)
+        self.enter_tunneltext = textwrap.dedent(
+        """ No tunnel to be found around here!""")
+        self.trail_text = textwrap.dedent(
+        """ There isn't a trail in sight!""")
+        self.use_sword = textwrap.dedent(
+        """ Who said anything about a sword?""")
+        self.swim_text = textwrap.dedent(
+        """ There's nowhere to swim.""")
+        self.use_boat = textwrap.dedent(
+        """ Why would there be a boat around?""")
+        self.drink_water = textwrap.dedent(
+        """ Too bad there isn\'t any water around to drink""")
     
         
 class Introduction(Scene):
@@ -104,14 +116,13 @@ class Introduction(Scene):
         world.""")
         
     def enter(self, player):
-        #player.health_status()
-        #player.display_items()
         cool_print(self.intro_text)
         
+        print "To check health status type \"health status\""
+        print "To check item inventory type \"display items\""
         command = str(raw_input("\n> "))
         
-        if command == "yes":
-            "living_room"
+        keywords.parse_commands(command)
         
         
         
@@ -146,7 +157,7 @@ class LivingRoom(Scene):
         Piet scratches at the door but gets tired of it quickly. He
         already knew that didn't bring his owners back.
         """)
-        self.lookaround_text = textwrap.dedent(
+        self.look_text = textwrap.dedent(
         """ \n
         Piet looks around the living room and notices that the window
         looking out at the backyard is open. Piet's ears perk up as he runs
@@ -207,7 +218,7 @@ class Backyard(Scene):
         over the fence landing on the other side. The cat speeds off to 
         the neighbor's yard.
         """)
-        self.go_inside_text = textwrap.dedent(
+        self.inside_text = textwrap.dedent(
         """ \n
         Piet jumps back inside through the open window. The cat looks 
         at Piet for a minute safely inside then curls up and lays down in 
@@ -237,13 +248,13 @@ class EnchantedForest(Scene):
         into the yard now that the cat was gone, but his owners weren't 
         there and he needed to bring them their forgotten wristwatch!
         """)
-        self.go_back_text = textwrap.dedent(
+        self.back_text = textwrap.dedent(
         """ \n
         Piet turns around and heads back inside like a coward. The cat
         was no longer in the yard. Who knew where his owners were. Piet 
         sat down and cried.
         """)
-        self.go_forward_text = textwrap.dedent(
+        self.forward_text = textwrap.dedent(
         """ \n
         'I will find my owners!' Piet thinks to himself, determined to
         find them. Piet enters the Enchanted Forest and walks along the dirt
@@ -252,7 +263,7 @@ class EnchantedForest(Scene):
         self.sniff_text = textwrap.dedent(
         """ 
         Piet finds a med pack nestled in the dirt.""")
-        self.lookaround_text = textwrap.dedent(
+        self.look_text = textwrap.dedent(
         """ \n
         Piet notices something shiny near some rocks. It's a small
         sword with a handle shaped perfectly to be held in a dog's mouth.
@@ -356,7 +367,7 @@ class Tunnel(Scene):
 class EnchantedForestPartTwo(Scene):
     
     def __init__(self):
-        self.go_forward_text = textwrap.dedent(
+        self.forward_text = textwrap.dedent(
         """ \n
         Piet decides to continue following the trail. Piet walks and 
         walks all day long. At one point he passes a small creek he gets
@@ -374,7 +385,7 @@ class EnchantedForestPartTwo(Scene):
         all over. 'Piet, where have you been!' His owner exclaimed. Piet
         barked excitedly and spun around in a circle. He was going home.
         """)
-        self.go_back_text = textwrap.dedent(
+        self.back_text = textwrap.dedent(
         """ \n
         Piet turns around and heads back. Who knows how long that trail 
         would go for. He couldn't even smell his owners on it anyway.
@@ -400,7 +411,7 @@ class River(Scene):
         Piet had no strength left and he let the river carry him far far away.
         Piet was never to be seen or heard of again. 
         """)
-        self.lookaround_text = textwrap.dedent(
+        self.look_text = textwrap.dedent(
         """ \n
         Piet looks around and finds a small dog size boat anchored to 
         the river bed.
@@ -439,7 +450,7 @@ class DogPark(Scene):
         thought I had lost this forever!' Piet's owner puts his wristwatch on, 
         then he picks Piet up and they go back home.
         """)
-        self.lookaround_text = textwrap.dedent(
+        self.look_text = textwrap.dedent(
         """ \n
         Piet looks around and sees a dog treat nestled in the grass.
         He gobbles it up hungrily.
@@ -473,31 +484,29 @@ class Map(object):
     def __init__(self, start_scene):
         self.start_scene = start_scene
       
-    def opening_scene(self):
-        self.scenes.get(self.start_scene)
-        return 
+    def next_scene(self, next_scene):
+        return self.scenes.get(next_scene)
         
-    def enter(self, next_scene):
-        self.scenes.get(next_scene)
-    
+    def opening_scene(self):
+        return self.scenes.get(self.start_scene)
     
 class Engine(object):
     
     def __init__(self, game_map):
         self.game_map = game_map
         
-    def play(self):
-        current_scene = self.game_map.start_scene
+    def play(self, player):
+        current_scene = self.game_map.opening_scene()
         
         while True:
-            next_scene = self.game_map.enter(current_scene)
-            current_scene = next_scene
+            next_scene_name = current_scene.enter(player)
+            current_scene = self.game_map.next_scene(next_scene_name)
             
 if __name__ == "__main__":
     piet = Player()
     a_map = Map('introduction')
     a_game = Engine(a_map)
-    a_game.play()
+    a_game.play(piet)
 
 #intro = a_map.scenes.get('introduction')
 #print type(intro)
