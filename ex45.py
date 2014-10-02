@@ -205,7 +205,7 @@ class LivingRoom(Scene):
         """)
         
     def enter(self, player):
-        pass
+        print "this is the living room"
     
 class Backyard(Scene):
     
