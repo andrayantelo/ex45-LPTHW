@@ -104,8 +104,8 @@ class Introduction(Scene):
         world.""")
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        #player.health_status()
+        #player.display_items()
         cool_print(self.intro_text)
         
         command = str(raw_input("\n> "))
@@ -487,17 +487,17 @@ class Engine(object):
         self.game_map = game_map
         
     def play(self):
-        current_scene = self.game_map.opening_scene()
+        current_scene = self.game_map.start_scene
         
         while True:
             next_scene = self.game_map.enter(current_scene)
             current_scene = next_scene
             
+if __name__ == "__main__":
+    piet = Player()
+    a_map = Map('introduction')
+    a_game = Engine(a_map)
+    a_game.play()
 
-piet = Player()
-a_map = Map('introduction')
-a_game = Engine(a_map)
-#a_game.play()
-
-intro = a_map.scenes.get('introduction')
-print type(intro)
+#intro = a_map.scenes.get('introduction')
+#print type(intro)
