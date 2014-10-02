@@ -127,7 +127,7 @@ class Scene(object):
                               'drink': self.drink_water
                                   }
                           
-        print self.command_dictionary.get(command)
+        return self.command_dictionary.get(command)
     
         
 class Introduction(Scene):
@@ -141,6 +141,7 @@ class Introduction(Scene):
         much. Piet was very protective of his owners and his friends. He 
         was a very loyal dog. Some say, he was the most loyal dog in the 
         world.""")
+        super(Introduction, self).__init__()
         
     def enter(self, player):
         cool_print(self.intro_text)
@@ -149,10 +150,9 @@ class Introduction(Scene):
         print "To check item inventory type \"display items\""
         command = str(raw_input("\n> "))
         
-        super(Introduction, self).__init__()
-        super(Introduction, self).parse_commands(command)
+        print super(Introduction, self).parse_commands(command)
         
-        
+        return 'living_room'
         
 class LivingRoom(Scene):
     
@@ -203,6 +203,9 @@ class LivingRoom(Scene):
         Piet sniffs around the living room and finds a med pack hidden
         behind the couch. He places it in his purse.
         """)
+        
+    def enter(self, player):
+        pass
     
 class Backyard(Scene):
     
