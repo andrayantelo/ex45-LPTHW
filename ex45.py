@@ -127,9 +127,12 @@ class Scene(object):
                               'boat': self.use_boat,
                               'drink': self.drink_water
                                   }
+                                  
+        sentence.split()
+        print sentence
         for word in sentence:
+            print word
             if word in self.command_dictionary:
-                print self.command_dictionary.get(word)
                 return self.command_dictionary.get(word)
         
     
@@ -137,6 +140,7 @@ class Scene(object):
 class Introduction(Scene):
     
     def __init__(self):
+        super(Introduction, self).__init__()
         self.intro_text = textwrap.dedent(
         """\n\n
         Once upon a time there lived a little black and white dog
@@ -145,7 +149,6 @@ class Introduction(Scene):
         much. Piet was very protective of his owners and his friends. He 
         was a very loyal dog. Some say, he was the most loyal dog in the 
         world.""")
-        super(Introduction, self).__init__()
         
     def enter(self, player):
         cool_print(self.intro_text)
@@ -156,7 +159,7 @@ class Introduction(Scene):
         while True:
             command = str(raw_input("\n> "))
         
-            print super(Introduction, self).parse_commands(command)
+            print self.parse_commands(command)
         
         return 'living_room'
         
