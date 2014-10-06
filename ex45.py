@@ -3,7 +3,10 @@
 import sys
 import textwrap
 import time
-import keywords
+from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
+                       RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
+                       BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
+                       BOAT, DRINK, HEALTH, ITEMS)
 
 def cool_print(text):
     for i in text: 
@@ -47,84 +50,87 @@ class Scene(object):
     
     def __init__(self):
         self.sniff_text = textwrap.dedent(""" Piet sniffs around a little bit.""")
-        self.look_text = textwrap.dedent(""" Piet looks around and sees nothing unusual.""")
-        self.nothing_text = textwrap.dedent(""" Piet sits down and does nothing.""")
+        self.look_text = textwrap.dedent(""" Piet looks around and sees 
+        nothing unusual.
+        """)
+        self.nothing_text = textwrap.dedent(""" Piet sits down and does
+        nothing.
+        """)
         self.play_text = textwrap.dedent(""" Now is not the time to be playing. 
         There are more important matters at hand!
         """)
         self.dig_text = textwrap.dedent(""" There is nowhere to dig.""")
-        self.bark_text = textwrap.dedent(
-        """ Piet barks three times and receives no response.""")
-        self.roll_text = textwrap.dedent(
-        """ Piet rolls over but there is no one around to scratch his 
-        tummy.
+        self.bark_text = textwrap.dedent(""" Piet barks three times 
+        and receives no response.
         """)
-        self.walk_text = textwrap.dedent(
-        """ Piet walks around in a circle.""")
-        self.run_text = textwrap.dedent(
-        """ Piet runs around chasing his tail. Then gets bored and sits
-        down.""")
-        self.stand_text = textwrap.dedent(
-        """ Piet stands and wonders about his owners.""")
-        self.find_text = textwrap.dedent(
-        """ 'Yes, yes. I need to find my owners!' Piet thinks.""")
-        self.sleep_text = textwrap.dedent(
-        """ Piet curls up into a ball and tries to fall asleep but is unable
-        to because all he can think about are his owners.
+        self.roll_text = textwrap.dedent(""" Piet rolls over but there 
+        is no one around to scratch his tummy.
         """)
-        self.scratch_text = textwrap.dedent(
-        """ There is nothing around for Piet to scratch!""")
-        self.fight_text = textwrap.dedent(
-        """ There aren't any enemies for Piet to fight.""")
-        self.inside_text = textwrap.dedent(
-        """ Piet is already inside.""")
-        self.back_text = textwrap.dedent(
-        """ It's too late to turn back now!""")
-        self.forward_text = textwrap.dedent(
-        """ Piet walks slowly forward.""")
-        self.display_items_text = textwrap.dedent(
-        """ Piet has the following items in his possesion: """)
-        self.enter_tunneltext = textwrap.dedent(
-        """ No tunnel to be found around here!""")
-        self.trail_text = textwrap.dedent(
-        """ There isn't a trail in sight!""")
-        self.use_sword = textwrap.dedent(
-        """ Who said anything about a sword?""")
-        self.swim_text = textwrap.dedent(
-        """ There's nowhere to swim.""")
-        self.use_boat = textwrap.dedent(
-        """ Why would there be a boat around?""")
-        self.drink_water = textwrap.dedent(
-        """ Too bad there isn\'t any water around to drink""")
+        self.walk_text = textwrap.dedent(""" Piet walks around in a circle.""")
+        self.run_text = textwrap.dedent(""" Piet runs around chasing his
+        tail. Then gets bored and sits down.""")
+        self.stand_text = textwrap.dedent(""" Piet stands and wonders 
+        about his owners.
+        """)
+        self.find_text = textwrap.dedent(""" \"Yes, yes. I need to find my
+         owners!\" Piet thinks.
+         """)
+        self.sleep_text = textwrap.dedent(""" Piet curls up into a ball 
+        and tries to fall asleep but is unable to because all he can think
+        about are his owners.
+        """)
+        self.scratch_text = textwrap.dedent(""" There is nothing around 
+        for Piet to scratch!
+        """)
+        self.fight_text = textwrap.dedent(""" There aren't any enemies 
+        for Piet to fight.
+        """)
+        self.inside_text = textwrap.dedent(""" Piet is already inside.""")
+        self.back_text = textwrap.dedent(""" It's too late to turn back now!""")
+        self.forward_text = textwrap.dedent(""" Piet walks slowly forward.""")
+        self.display_items_text = textwrap.dedent(""" Piet has the following
+        items in his possesion: 
+        """)
+        self.enter_tunneltext = textwrap.dedent(""" No tunnel to be found
+        around here!
+        """)
+        self.trail_text = textwrap.dedent(""" There isn't a trail in sight!""")
+        self.use_sword = textwrap.dedent(""" Who said anything about a sword?""")
+        self.swim_text = textwrap.dedent(""" There's nowhere to swim.""")
+        self.use_boat = textwrap.dedent(""" Why would there be a boat around?""")
+        self.drink_water = textwrap.dedent(""" Too bad there isn\'t any 
+        water around to drink
+        """)
         self.command_dictionary = {}
         
     def parse_commands(self, sentence):
         
-        self.command_dictionary = {'sniff': self.sniff_text,
-                              'look': self.look_text,
-                              'nothing': self.nothing_text,
-                              'play': self.play_text,
-                              'dig': self.dig_text,
-                              'bark': self.bark_text,
-                              'roll': self.roll_text,
-                              'walk': self.walk_text,
-                              'run': self.run_text,
-                              'stand': self.stand_text,
-                              'find': self.find_text,
-                              'inside': self.inside_text,
-                              'back': self.back_text,
-                              'forward': self.forward_text,
-                              'items': self.display_items_text,
-                              'enter': self.enter_tunneltext,
-                              'trail': self.trail_text,
-                              'sword': self.use_sword,
-                              'swim': self.swim_text,
-                              'boat': self.use_boat,
-                              'drink': self.drink_water,
-                              ('health','status'): player.health_status()
-                                  }
-                                  
-        for word in sentence:
+        self.command_dictionary = {SNIFF: self.sniff_text,
+                                   LOOK: self.look_text,
+                                   NOTHING: self.nothing_text,
+                                   PLAY: self.play_text,
+                                   DIG: self.dig_text,
+                                   BARK: self.bark_text,
+                                   ROLL: self.roll_text,
+                                   WALK: self.walk_text,
+                                   RUN: self.run_text,
+                                   STAND: self.stand_text,
+                                   FIND: self.find_text,
+                                   INSIDE: self.inside_text,
+                                   BACK: self.back_text,
+                                   FORWARD: self.forward_text,
+                                   ITEMS: self.display_items_text,
+                                   ENTER: self.enter_tunneltext,
+                                   TRAIL: self.trail_text,
+                                   SWORD: self.use_sword,
+                                   SWIM: self.swim_text,
+                                   BOAT: self.use_boat,
+                                   DRINK: self.drink_water,
+                                   HEALTH: Player.health_status,
+                                   ITEMS: 2
+                                    }
+        word_list = sentence.split()
+        for word in word_list:
             if word in self.command_dictionary:
                 return self.command_dictionary.get(word)
         
@@ -152,12 +158,9 @@ class Introduction(Scene):
         
         while True:
             command = str(raw_input("\n> "))
-            command_words = command.split()
             
-            #if 'forward' in command_words:
-             #   print self.parse_commands(command_words)
         
-            print self.parse_commands(command_words)
+            self.parse_commands(command)
         
         return 'living_room'
         

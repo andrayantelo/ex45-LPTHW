@@ -22,6 +22,10 @@ SWORD = 'sword'
 SWIM = 'swim'
 BOAT = 'boat'
 DRINK = 'drink'
+HEALTH = 'health'
+ITEMS = 'items'
+
+
 
 
 
