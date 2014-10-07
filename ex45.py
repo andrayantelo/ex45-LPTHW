@@ -217,6 +217,9 @@ class LivingRoom(Scene):
     def enter(self, player):
         print "this is the living room"
         player.health_status()
+        player.display_items()
+        
+        cool_print(self.living_text)
     
 class Backyard(Scene):
     
