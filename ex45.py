@@ -7,6 +7,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS)
+import string
 
 def cool_print(text):
     for i in text: 
@@ -103,36 +104,29 @@ class Scene(object):
         """)
         self.command_dictionary = {}
         
-    def parse_commands(self, sentence):
+    def clean_text(self, sentence):
+        sentence = ''.join(c for c in sentence if c not in string.punctuation)
+        sentence = sentence.lower()
+        words = sentence.split()
         
-        self.command_dictionary = {SNIFF: self.sniff_text,
-                                   LOOK: self.look_text,
-                                   NOTHING: self.nothing_text,
-                                   PLAY: self.play_text,
-                                   DIG: self.dig_text,
-                                   BARK: self.bark_text,
-                                   ROLL: self.roll_text,
-                                   WALK: self.walk_text,
-                                   RUN: self.run_text,
-                                   STAND: self.stand_text,
-                                   FIND: self.find_text,
-                                   INSIDE: self.inside_text,
-                                   BACK: self.back_text,
-                                   FORWARD: self.forward_text,
-                                   ITEMS: self.display_items_text,
-                                   ENTER: self.enter_tunneltext,
-                                   TRAIL: self.trail_text,
-                                   SWORD: self.use_sword,
-                                   SWIM: self.swim_text,
-                                   BOAT: self.use_boat,
-                                   DRINK: self.drink_water,
-                                   HEALTH: Player.health_status,
-                                   ITEMS: 2
-                                    }
-        word_list = sentence.split()
-        for word in word_list:
-            if word in self.command_dictionary:
-                return self.command_dictionary.get(word)
+        stop_words = ['a','the','an','and','at']
+        words = [w for w in words if w not in stop_words]
+        
+        return words
+        
+        
+    def parse_command(self, sentence):
+        words = self.clean_text(sentence)
+        print "WORDS:", words
+        
+        #default action 
+        action = none
+        
+        
+        #word_list = sentence.split()
+        #for word in word_list:
+        #    if word in self.command_dictionary:
+        #        return self.command_dictionary.get(word)
         
     
         
@@ -160,7 +154,7 @@ class Introduction(Scene):
             command = str(raw_input("\n> "))
             
         
-            self.parse_commands(command)
+            self.parse_command(command)
         
         return 'living_room'
         
