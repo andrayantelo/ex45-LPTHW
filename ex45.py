@@ -57,8 +57,8 @@ class Scene(object):
         self.nothing_text = textwrap.dedent(""" Piet sits down and does
         nothing.
         """)
-        self.play_text = textwrap.dedent(""" Now is not the time to be playing. 
-        There are more important matters at hand!
+        self.play_text = textwrap.dedent(""" Now is not the time to be playing
+        or chewing! There are more important matters at hand!
         """)
         self.dig_text = textwrap.dedent(""" There is nowhere to dig.""")
         self.bark_text = textwrap.dedent(""" Piet barks three times 
@@ -66,6 +66,12 @@ class Scene(object):
         """)
         self.roll_text = textwrap.dedent(""" Piet rolls over but there 
         is no one around to scratch his tummy.
+        """)
+        self.jump_text = textwrap.dedent(""" Piet jumps up and down and
+        quickly gets bored.
+        """)
+        self.pickup_text = textwrap.dedent(""" There's nothing around to 
+        pick up.
         """)
         self.walk_text = textwrap.dedent(""" Piet walks around in a circle.""")
         self.run_text = textwrap.dedent(""" Piet runs around chasing his
@@ -109,7 +115,7 @@ class Scene(object):
         sentence = sentence.lower()
         words = sentence.split()
         
-        stop_words = ['a','the','an','and','at']
+        stop_words = ['a','the','an','and','at','that']
         words = [w for w in words if w not in stop_words]
         
         return words
@@ -120,7 +126,59 @@ class Scene(object):
         print "WORDS:", words
         
         #default action 
-        action = none
+        action = None
+        
+        if 'look' in words:
+            action = LOOK
+        elif 'nothing' in words:
+            action = NOTHING
+        elif any(w in words for w in ('chew', 'play')):
+            action = PLAY
+        elif 'dig' in words:
+            action = DIG
+        elif 'bark' in words:
+            action = BARK
+        elif any(w in words for w in ('roll', 'rollover')):
+            action = ROLL
+        elif any(w in words for w in ('walk', 'stroll', 'step', 'march',
+                                       'hike')):
+            action = WALK
+        elif any(w in words for w in ('run', 'sprint', 'race', 'dash')):
+            action = RUN
+        elif 'stand' in words:
+            action = STAND
+        elif any(w in words for w in ('find', 'track down')):
+            action = FIND
+        elif any(w in words for w in ('go inside', 'inside', 'indoors')):
+            action = INSIDE
+        elif any(w in words for w in ('go back', 'return', 'retreat',
+                                        'back')):
+            action = BACK
+        elif any(w in words for w in ('go forward', 'onward', 'forward',
+                                       'ahead')):
+            action = FORWARD
+        elif any(w in words for w in ('items', 'display', 'display items')):
+            action = ITEMS
+        elif any(w in words for w in ('enter', 'go inside', 'go in', 'in')):
+            action = ENTER
+        elif any(w in words for w in ('trail', 'path', 'footpath', 'pathway')):
+            action = TRAIL
+        elif any(w in words for w in ('sword', 'weapon')):
+            action = SWORD
+        elif any(w in words for w in ('boat', 'ship', 'raft')):
+            action = BOAT
+        elif any(w in words for w in ('drink', 'sip', 'taste')):
+            action = DRINK
+        elif any(w in words for w in ('health', 'status', 'health status')):
+            action = HEALTH
+        elif any(w in words for w in ('jump', 'hop', 'spring', 'leap')):
+            action = JUMP
+        
+        print action
+        return action
+            
+        
+        
         
         
         #word_list = sentence.split()
@@ -172,6 +230,11 @@ class LivingRoom(Scene):
         is the living room. Piet stared at the front door for a bit and
         then noticed that his owner had forgotten his wristwatch.
         """)
+        self.pickup_text = textwrap.dedent(
+        """ The only thing around to pick up is the wristwatch. Piet gingerly
+        grasps it in his mouth and places it in his dog purse which he
+        wears around his neck.
+        """)
         self.sleep_text = textwrap.dedent(
         """ \n
         Piet whimpered at the door a little bit. Then he curled up into
@@ -196,16 +259,17 @@ class LivingRoom(Scene):
         over to the window. He stops short in front of the window and looks 
         out hesitantly. A soft cool breeze beckons him and he could hear birds
         chirping in the trees and leaves rustling in the wind. He sniffs
-        the air and smells all sorts of wonderful smells. The decision was made.
-        Piet walks back towards the wristwatch and picks it up gingerly with 
-        his mouth. He nudges the wristwatch into a small dog purse that he 
-        wears around his neck. Then he turns, sprints, and leaps out 
-        the open window.
+        the air and smells all sorts of wonderful smells. 
         """)
         self.sniff_text = textwrap.dedent(
         """ \n
         Piet sniffs around the living room and finds a med pack hidden
         behind the couch. He places it in his purse.
+        """)
+        self.jump_text = textwrap.dedent("""
+        The decision was made. Piet goes and retrieves his dog purses then
+        he turns to face the window. He musters up all of his strength and sprints
+        forward leaping out the open window.
         """)
         
     def enter(self, player):
