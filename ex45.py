@@ -6,7 +6,7 @@ import time
 from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
-                       BOAT, DRINK, HEALTH, ITEMS)
+                       BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE)
 import string
 
 def cool_print(text):
@@ -109,6 +109,9 @@ class Scene(object):
         self.drink_water = textwrap.dedent(""" 
         Too bad there isn\'t any water around to drink
         """)
+        # is there a way to have the text say retrieve, fetch, or salvage depending on what the user inputs?
+        self.retrieve_text = textwrap.dedent("""
+        There is nothing to retrieve.""")
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -178,6 +181,8 @@ class Scene(object):
             action = JUMP
         elif 'continue' in words:
             action = CONTINUE
+        elif any(w in words for w in ('retrieve', 'fetch', 'salvage')):
+            action = RETRIEVE
         
         print action
         return action
@@ -229,6 +234,8 @@ class Scene(object):
             print "health status goes here"
         elif action == JUMP:
             print self.jump_text
+        elif action == RETRIEVE:
+            print self.retrieve_text
         elif action == None:
             print "Try another command."
             
@@ -260,8 +267,8 @@ class Introduction(Scene):
             
         
             self.process_action(command)
-        
-        return 'living_room'
+            if self.parse_command(command) == CONTINUE:
+                return 'living_room'
         
 class LivingRoom(Scene):
     
@@ -315,17 +322,24 @@ class LivingRoom(Scene):
         behind the couch. He places it in his purse.
         """)
         self.jump_text = textwrap.dedent("""
-        The decision was made. Piet goes and retrieves his dog purses then
+        Piet goes and retrieves his dog purse then
         he turns to face the window. He musters up all of his strength and sprints
         forward leaping out the open window.
         """)
         
     def enter(self, player):
-        print "this is the living room"
         player.health_status()
         player.display_items()
         
         cool_print(self.living_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+        
+            self.process_action(command)
+            if self.parse_command(command) == JUMP:
+                return 'backyard'
     
 class Backyard(Scene):
     
@@ -386,6 +400,8 @@ class Backyard(Scene):
         self.dig_text = textwrap.dedent(""" Piet digs a hole in the ground
         and sticks his nose in it.""")
         
+    def enter(self, player):
+        print "this is the backyard"
     
 class EnchantedForest(Scene):
     
