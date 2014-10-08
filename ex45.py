@@ -51,62 +51,63 @@ class Scene(object):
     
     def __init__(self):
         self.sniff_text = textwrap.dedent(""" Piet sniffs around a little bit.""")
-        self.look_text = textwrap.dedent(""" Piet looks around and sees 
-        nothing unusual.
+        self.look_text = textwrap.dedent(""" 
+        Piet looks around and sees nothing unusual.
         """)
-        self.nothing_text = textwrap.dedent(""" Piet sits down and does
-        nothing.
+        self.nothing_text = textwrap.dedent(""" 
+        Piet sits down and does nothing.
         """)
-        self.play_text = textwrap.dedent(""" Now is not the time to be playing
-        or chewing! There are more important matters at hand!
+        self.play_text = textwrap.dedent(""" 
+        Now is not the time to be playing or chewing! There are more 
+        important matters at hand!
         """)
         self.dig_text = textwrap.dedent(""" There is nowhere to dig.""")
-        self.bark_text = textwrap.dedent(""" Piet barks three times 
-        and receives no response.
+        self.bark_text = textwrap.dedent(""" 
+        Piet barks three times and receives no response.
         """)
-        self.roll_text = textwrap.dedent(""" Piet rolls over but there 
-        is no one around to scratch his tummy.
+        self.roll_text = textwrap.dedent("""
+        Piet rolls over but there is no one around to scratch his tummy.
         """)
-        self.jump_text = textwrap.dedent(""" Piet jumps up and down and
-        quickly gets bored.
+        self.jump_text = textwrap.dedent(""" 
+        Piet jumps up and down and quickly gets bored.
         """)
-        self.pickup_text = textwrap.dedent(""" There's nothing around to 
-        pick up.
+        self.pickup_text = textwrap.dedent(""" 
+        There's nothing around to pick up.
         """)
         self.walk_text = textwrap.dedent(""" Piet walks around in a circle.""")
-        self.run_text = textwrap.dedent(""" Piet runs around chasing his
-        tail. Then gets bored and sits down.""")
-        self.stand_text = textwrap.dedent(""" Piet stands and wonders 
-        about his owners.
+        self.run_text = textwrap.dedent(""" 
+        Piet runs around chasing his tail. Then gets bored and sits down.""")
+        self.stand_text = textwrap.dedent(""" 
+        Piet stands and wonders about his owners.
         """)
-        self.find_text = textwrap.dedent(""" \"Yes, yes. I need to find my
-         owners!\" Piet thinks.
+        self.find_text = textwrap.dedent(""" 
+        \"Yes, yes. I need to find my owners!\" Piet thinks.
          """)
-        self.sleep_text = textwrap.dedent(""" Piet curls up into a ball 
-        and tries to fall asleep but is unable to because all he can think
-        about are his owners.
+        self.sleep_text = textwrap.dedent(""" 
+        Piet curls up into a ball and tries to fall asleep but is unable
+        to because all he can think about are his owners.
         """)
-        self.scratch_text = textwrap.dedent(""" There is nothing around 
-        for Piet to scratch!
+        self.scratch_text = textwrap.dedent(""" 
+        There is nothing around for Piet to scratch!
         """)
-        self.fight_text = textwrap.dedent(""" There aren't any enemies 
-        for Piet to fight.
+        self.fight_text = textwrap.dedent(""" 
+        There aren't any enemies for Piet to fight.
         """)
         self.inside_text = textwrap.dedent(""" Piet is already inside.""")
         self.back_text = textwrap.dedent(""" It's too late to turn back now!""")
         self.forward_text = textwrap.dedent(""" Piet walks slowly forward.""")
-        self.display_items_text = textwrap.dedent(""" Piet has the following
-        items in his possesion: 
+        self.display_items_text = textwrap.dedent(""" 
+        Piet has the following items in his possesion: 
         """)
-        self.enter_tunneltext = textwrap.dedent(""" No tunnel to be found
-        around here!
+        self.enter_tunneltext = textwrap.dedent(""" 
+        No tunnel to be found around here!
         """)
         self.trail_text = textwrap.dedent(""" There isn't a trail in sight!""")
         self.use_sword = textwrap.dedent(""" Who said anything about a sword?""")
         self.swim_text = textwrap.dedent(""" There's nowhere to swim.""")
         self.use_boat = textwrap.dedent(""" Why would there be a boat around?""")
-        self.drink_water = textwrap.dedent(""" Too bad there isn\'t any 
-        water around to drink
+        self.drink_water = textwrap.dedent(""" 
+        Too bad there isn\'t any water around to drink
         """)
         self.command_dictionary = {}
         
@@ -123,7 +124,7 @@ class Scene(object):
         
     def parse_command(self, sentence):
         words = self.clean_text(sentence)
-        print "WORDS:", words
+        #print "WORDS:", words
         
         #default action 
         action = None
@@ -132,6 +133,8 @@ class Scene(object):
             action = LOOK
         elif 'nothing' in words:
             action = NOTHING
+        elif any(w in words for w in ('sniff', 'smell', 'scent', 'inhale')):
+            action = SNIFF
         elif any(w in words for w in ('chew', 'play')):
             action = PLAY
         elif 'dig' in words:
@@ -149,17 +152,17 @@ class Scene(object):
             action = STAND
         elif any(w in words for w in ('find', 'track down')):
             action = FIND
-        elif any(w in words for w in ('go inside', 'inside', 'indoors')):
+        elif any(w in words for w in ( 'inside', 'indoors')):
             action = INSIDE
-        elif any(w in words for w in ('go back', 'return', 'retreat',
+        elif any(w in words for w in ('return', 'retreat',
                                         'back')):
             action = BACK
-        elif any(w in words for w in ('go forward', 'onward', 'forward',
+        elif any(w in words for w in ('onward', 'forward',
                                        'ahead')):
             action = FORWARD
-        elif any(w in words for w in ('items', 'display', 'display items')):
+        elif any(w in words for w in ('items', 'display')):
             action = ITEMS
-        elif any(w in words for w in ('enter', 'go inside', 'go in', 'in')):
+        elif any(w in words for w in ('enter', 'in')):
             action = ENTER
         elif any(w in words for w in ('trail', 'path', 'footpath', 'pathway')):
             action = TRAIL
@@ -169,24 +172,68 @@ class Scene(object):
             action = BOAT
         elif any(w in words for w in ('drink', 'sip', 'taste')):
             action = DRINK
-        elif any(w in words for w in ('health', 'status', 'health status')):
+        elif any(w in words for w in ('health', 'status')):
             action = HEALTH
         elif any(w in words for w in ('jump', 'hop', 'spring', 'leap')):
             action = JUMP
+        elif 'continue' in words:
+            action = CONTINUE
         
         print action
         return action
+        
+    def process_action(self, command):
+        action = self.parse_command(command)
+        
+        if action == LOOK:
+            print self.look_text
+        elif action == NOTHING:
+            print self.nothing_text
+        elif action == SNIFF:
+            print self.sniff_text
+        elif action == PLAY:
+            print self.play_text
+        elif action == DIG:
+            print self.dig_text
+        elif action == BARK:
+            print self.bark_text
+        elif action == ROLL:
+            print self.roll_text
+        elif action == WALK:
+            print self.walk_text
+        elif action == RUN:
+            print self.run_text
+        elif action == STAND:
+            print self.stand_text
+        elif action == FIND:
+            print self.find_text
+        elif action == INSIDE:
+            print self.inside_text
+        elif action == BACK:
+            print self.back_text
+        elif action == FORWARD:
+            print self.forward_text
+        elif action == ITEMS:
+            print self.display_items_text
+        elif action == ENTER:
+            print self.enter_tunneltext
+        elif action == TRAIL:
+            print self.trail_text
+        elif action == SWORD:
+            print self.use_sword
+        elif action == BOAT:
+            print self.use_boat
+        elif action == DRINK:
+            print self.drink_water
+        elif action == HEALTH:
+            print "health status goes here"
+        elif action == JUMP:
+            print self.jump_text
+        elif action == None:
+            print "Try another command."
+            
             
         
-        
-        
-        
-        #word_list = sentence.split()
-        #for word in word_list:
-        #    if word in self.command_dictionary:
-        #        return self.command_dictionary.get(word)
-        
-    
         
 class Introduction(Scene):
     
@@ -206,13 +253,13 @@ class Introduction(Scene):
         
         print "To check health status type \"health status\""
         print "To check item inventory type \"display items\""
-        print "To continue press 'Enter'"
+        print "Type 'continue' to continue"
         
         while True:
             command = str(raw_input("\n> "))
             
         
-            self.parse_command(command)
+            self.process_action(command)
         
         return 'living_room'
         
@@ -231,7 +278,8 @@ class LivingRoom(Scene):
         then noticed that his owner had forgotten his wristwatch.
         """)
         self.pickup_text = textwrap.dedent(
-        """ The only thing around to pick up is the wristwatch. Piet gingerly
+        """ 
+        The only thing around to pick up is the wristwatch. Piet gingerly
         grasps it in his mouth and places it in his dog purse which he
         wears around his neck.
         """)
@@ -367,7 +415,8 @@ class EnchantedForest(Scene):
         """)
         self.sniff_text = textwrap.dedent(
         """ 
-        Piet finds a med pack nestled in the dirt.""")
+        Piet finds a med pack nestled in the dirt.
+        """)
         self.look_text = textwrap.dedent(
         """ \n
         Piet notices something shiny near some rocks. It's a small
@@ -379,8 +428,8 @@ class EnchantedForest(Scene):
         anything and then he hears a loud hissing. His barking has attracted
         a large Coral Snake!
         """)
-        self.dig_text = textwrap.dedent(""" Piet digs a hole in the ground
-        and sticks his nose in it.""")
+        self.dig_text = textwrap.dedent(""" 
+        Piet digs a hole in the ground and sticks his nose in it.""")
         
     
 class Tunnel(Scene):
@@ -470,8 +519,8 @@ class Tunnel(Scene):
         he remembers that it was time to get out of this tunnel and he begins to
         sprint to the exit.
         """)
-        self.dig_text = textwrap.dedent(""" Piet digs a hole in the ground
-        and sticks his nose in it.""")
+        self.dig_text = textwrap.dedent(""" 
+        Piet digs a hole in the ground and sticks his nose in it.""")
         
 class EnchantedForestPartTwo(Scene):
     
@@ -499,10 +548,10 @@ class EnchantedForestPartTwo(Scene):
         Piet turns around and heads back. Who knows how long that trail 
         would go for. He couldn't even smell his owners on it anyway.
         """)
-        self.sniff_text = textwrap.dedent(
-        """ Piet sniffs around and finds a medpack hidden in the shrubs.""")
-        self.dig_text = textwrap.dedent(""" Piet digs a hole in the ground
-        and sticks his nose in it.""")
+        self.sniff_text = textwrap.dedent("""
+        Piet sniffs around and finds a medpack hidden in the shrubs.""")
+        self.dig_text = textwrap.dedent(""" 
+        Piet digs a hole in the ground and sticks his nose in it.""")
         
         
     
@@ -532,10 +581,11 @@ class River(Scene):
         Piet leaps into the boat pulls up the anchor. Then he grabs a 
         paddle with his mouth and begins to paddle across the river.
         """)
-        self.drink_water = textwrap.dedent(
-        """ Piet takes a couple of sips of the fresh river water.""")
-        self.dig_text = textwrap.dedent(""" Piet digs a hole in the ground
-        and sticks his nose in it.""")
+        self.drink_water = textwrap.dedent("""
+        Piet takes a couple of sips of the fresh river water.
+        """)
+        self.dig_text = textwrap.dedent(""" 
+        Piet digs a hole in the ground and sticks his nose in it.""")
         
     
 class DogPark(Scene):
@@ -568,16 +618,16 @@ class DogPark(Scene):
         Piet looks around and sees a dog treat nestled in the grass.
         He gobbles it up hungrily.
         """)
-        self.dig_text = textwrap.dedent(""" Piet digs a hole in the ground
-        and sticks his nose in it.""")
+        self.dig_text = textwrap.dedent(""" 
+        Piet digs a hole in the ground and sticks his nose in it.""")
         
     
 class Death(Scene):
     
     def __init__(self):
-        self.death_text = textwrap.dedent(
-        """ Unfortunately, the decisions Piet has made have led him to his
-        death. Game over!
+        self.death_text = textwrap.dedent("""
+        Unfortunately, the decisions Piet has made have led him to his
+        untimely death. Game over!
         """)
         
         def enter(self):
