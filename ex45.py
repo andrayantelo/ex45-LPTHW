@@ -269,8 +269,8 @@ class Introduction(Scene):
             command = str(raw_input("\n> "))
             
         
-            self.process_action(command)
-            if self.parse_command(command) == CONTINUE:
+            action = self.process_action(command)
+            if action == CONTINUE:
                 return 'living_room'
         
 class LivingRoom(Scene):
@@ -345,8 +345,8 @@ class LivingRoom(Scene):
             command = str(raw_input("Type a command.\n> "))
             
         
-            self.process_action(command)
-            if self.parse_command(command) == JUMP:
+            action = self.process_action(command)
+            if action == JUMP:
                 return 'backyard'
     
 class Backyard(Scene):
@@ -417,14 +417,17 @@ class Backyard(Scene):
             command = str(raw_input("Type a command.\n> "))
             
         
-            self.process_action(command)
-            if self.parse_command(command) == RUN:
+            action = self.process_action(command)
+            if action == RUN:
                 return 'enchanted_forest'
+            elif action in (NOTHING, FIGHT):
+                return 'death'
                 
     
 class EnchantedForest(Scene):
     
     def __init__(self):
+        super(EnchantedForest, self).__init__()
         self.enchanted_text = textwrap.dedent(
         """ \n
         On the other side of the fence Piet finds himself at the border
@@ -468,6 +471,7 @@ class EnchantedForest(Scene):
 class Tunnel(Scene):
     
     def __init__(self):
+        super(Tunnel, self).__init__()
         self.tunnel_text = textwrap.dedent(
         """ \n
         The clearing is large and covered in dirt and shrubs. Piet sees
@@ -557,6 +561,7 @@ class Tunnel(Scene):
 class EnchantedForestPartTwo(Scene):
     
     def __init__(self):
+        super(EnchantedForestPartTwo, self).__init__()
         self.forward_text = textwrap.dedent(
         """ \n
         Piet decides to continue following the trail. Piet walks and 
@@ -588,6 +593,7 @@ class EnchantedForestPartTwo(Scene):
 class River(Scene):
     
     def __init__(self):
+        super(River, self).__init__()
         self.river_text = textwrap.dedent(
         """ \n
         Piet emerges from the tunnel into the blinding sunlight. He shuts
@@ -620,6 +626,7 @@ class River(Scene):
 class DogPark(Scene):
     
     def __init__(self):
+        super(DogPark, self).__init__()
         self.dogpark_text = textwrap.dedent(
         """ \n
         Piet arrives on the other side of the river and sees that he has
