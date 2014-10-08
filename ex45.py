@@ -61,7 +61,8 @@ class Scene(object):
         Now is not the time to be playing or chewing! There are more 
         important matters at hand!
         """)
-        self.dig_text = textwrap.dedent(""" There is nowhere to dig.""")
+        self.dig_text = textwrap.dedent(""" 
+        Piet digs a hole in the ground and sticks his nose in it""")
         self.bark_text = textwrap.dedent(""" 
         Piet barks three times and receives no response.
         """)
@@ -254,6 +255,8 @@ class Introduction(Scene):
         much. Piet was very protective of his owners and his friends. He 
         was a very loyal dog. Some say, he was the most loyal dog in the 
         world.""")
+        self.dig_text = textwrap.dedent("""
+        There is nowhere to dig.""")
         
     def enter(self, player):
         cool_print(self.intro_text)
@@ -273,6 +276,7 @@ class Introduction(Scene):
 class LivingRoom(Scene):
     
     def __init__(self):
+        super(LivingRoom, self).__init__()
         self.living_text = textwrap.dedent(
         """ \n
         One lovely Sunday morning, Piet was napping peacefully 
@@ -326,6 +330,10 @@ class LivingRoom(Scene):
         he turns to face the window. He musters up all of his strength and sprints
         forward leaping out the open window.
         """)
+        self.dig_text = textwrap.dedent("""
+        There is nowhere to dig!"""
+        )
+        self.items = ['medpack', 'wristwatch']
         
     def enter(self, player):
         player.health_status()
@@ -344,6 +352,7 @@ class LivingRoom(Scene):
 class Backyard(Scene):
     
     def __init__(self):
+        super(Backyard, self).__init__()
         self.backyard_text = textwrap.dedent(
         """ \n
         Piet lands clumsily on his four paws and looks back up at the
@@ -397,11 +406,21 @@ class Backyard(Scene):
         at Piet with its claws. Piet yelps as the cat continues to swipe.
         Eventually, the cat leaves Piet alone to die.
         """)
-        self.dig_text = textwrap.dedent(""" Piet digs a hole in the ground
-        and sticks his nose in it.""")
+        self.items = []
         
     def enter(self, player):
-        print "this is the backyard"
+        player.health_status()
+        player.display_items()
+        cool_print(self.backyard_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+        
+            self.process_action(command)
+            if self.parse_command(command) == RUN:
+                return 'enchanted_forest'
+                
     
 class EnchantedForest(Scene):
     
@@ -431,7 +450,7 @@ class EnchantedForest(Scene):
         """)
         self.sniff_text = textwrap.dedent(
         """ 
-        Piet finds a med pack nestled in the dirt.
+        Piet finds a medpack nestled in the dirt.
         """)
         self.look_text = textwrap.dedent(
         """ \n
@@ -444,9 +463,7 @@ class EnchantedForest(Scene):
         anything and then he hears a loud hissing. His barking has attracted
         a large Coral Snake!
         """)
-        self.dig_text = textwrap.dedent(""" 
-        Piet digs a hole in the ground and sticks his nose in it.""")
-        
+        self.items = ['medpack', 'sword']
     
 class Tunnel(Scene):
     
@@ -535,8 +552,7 @@ class Tunnel(Scene):
         he remembers that it was time to get out of this tunnel and he begins to
         sprint to the exit.
         """)
-        self.dig_text = textwrap.dedent(""" 
-        Piet digs a hole in the ground and sticks his nose in it.""")
+        self.items = ['head lamp']
         
 class EnchantedForestPartTwo(Scene):
     
@@ -566,9 +582,7 @@ class EnchantedForestPartTwo(Scene):
         """)
         self.sniff_text = textwrap.dedent("""
         Piet sniffs around and finds a medpack hidden in the shrubs.""")
-        self.dig_text = textwrap.dedent(""" 
-        Piet digs a hole in the ground and sticks his nose in it.""")
-        
+        self.items = ['medpack']
         
     
 class River(Scene):
@@ -600,8 +614,7 @@ class River(Scene):
         self.drink_water = textwrap.dedent("""
         Piet takes a couple of sips of the fresh river water.
         """)
-        self.dig_text = textwrap.dedent(""" 
-        Piet digs a hole in the ground and sticks his nose in it.""")
+        
         
     
 class DogPark(Scene):
@@ -634,8 +647,6 @@ class DogPark(Scene):
         Piet looks around and sees a dog treat nestled in the grass.
         He gobbles it up hungrily.
         """)
-        self.dig_text = textwrap.dedent(""" 
-        Piet digs a hole in the ground and sticks his nose in it.""")
         
     
 class Death(Scene):
