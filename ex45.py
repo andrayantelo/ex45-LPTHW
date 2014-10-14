@@ -6,7 +6,8 @@ import time
 from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
-                       BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE)
+                       BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
+                       GATHER)
 import string
 
 def cool_print(text):
@@ -25,7 +26,7 @@ class Player(object):
     def health_status(self):
         heart = u'\u2764'
         empty_heart = u'\u2661'
-        print "Your current health status is:"
+        print "Your current health status:"
         if self.status == 3:
             print heart, heart, heart
         if self.status == 2: 
@@ -97,9 +98,6 @@ class Scene(object):
         self.inside_text = textwrap.dedent(""" Piet is already inside.""")
         self.back_text = textwrap.dedent(""" It's too late to turn back now!""")
         self.forward_text = textwrap.dedent(""" Piet walks slowly forward.""")
-        self.display_items_text = textwrap.dedent(""" 
-        Piet has the following items in his possesion: 
-        """)
         self.enter_tunneltext = textwrap.dedent(""" 
         No tunnel to be found around here!
         """)
@@ -113,6 +111,8 @@ class Scene(object):
         # is there a way to have the text say retrieve, fetch, or salvage depending on what the user inputs?
         self.retrieve_text = textwrap.dedent("""
         There is nothing to retrieve.""")
+        self.gather_text = textwrap.dedent("""
+        there is nothing here to pick up or gather.""")
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -120,7 +120,8 @@ class Scene(object):
         sentence = sentence.lower()
         words = sentence.split()
         
-        stop_words = ['a','the','an','and','at','that']
+        stop_words = ['a','the','an','and','at','that', 'watch', 'sword',
+                      'medpack', 'headlamp']
         words = [w for w in words if w not in stop_words]
         
         return words
@@ -137,6 +138,8 @@ class Scene(object):
             action = LOOK
         elif 'nothing' in words:
             action = NOTHING
+        elif any(w in words for w in ('pick', 'grab', 'lift', 'gather')):
+            action = GATHER
         elif any(w in words for w in ('sniff', 'smell', 'scent', 'inhale')):
             action = SNIFF
         elif any(w in words for w in ('chew', 'play')):
@@ -184,11 +187,12 @@ class Scene(object):
             action = CONTINUE
         elif any(w in words for w in ('retrieve', 'fetch', 'salvage')):
             action = RETRIEVE
-        
+            
         print action
+        
         return action
         
-    def process_action(self, command):
+    def process_action(self, command, player):
         action = self.parse_command(command)
         
         if action == LOOK:
@@ -220,7 +224,7 @@ class Scene(object):
         elif action == FORWARD:
             print self.forward_text
         elif action == ITEMS:
-            print self.display_items_text
+            player.display_items()
         elif action == ENTER:
             print self.enter_tunneltext
         elif action == TRAIL:
@@ -232,11 +236,15 @@ class Scene(object):
         elif action == DRINK:
             print self.drink_water
         elif action == HEALTH:
-            print "health status goes here"
+            player.health_status()
         elif action == JUMP:
             print self.jump_text
         elif action == RETRIEVE:
             print self.retrieve_text
+        elif action == CONTINUE:
+            print "You have typed 'continue'."
+        elif action == GATHER:
+            print self.gather_text
         elif action == None:
             print "Try another command."
             
@@ -269,7 +277,8 @@ class Introduction(Scene):
             command = str(raw_input("\n> "))
             
         
-            action = self.process_action(command)
+            action = self.parse_command(command)
+            self.process_action(command, player)
             if action == CONTINUE:
                 return 'living_room'
         
@@ -288,7 +297,7 @@ class LivingRoom(Scene):
         is the living room. Piet stared at the front door for a bit and
         then noticed that his owner had forgotten his wristwatch.
         """)
-        self.pickup_text = textwrap.dedent(
+        self.gather_text = textwrap.dedent(
         """ 
         The only thing around to pick up is the wristwatch. Piet gingerly
         grasps it in his mouth and places it in his dog purse which he
@@ -345,7 +354,8 @@ class LivingRoom(Scene):
             command = str(raw_input("Type a command.\n> "))
             
         
-            action = self.process_action(command)
+            action = self.parse_command(command)
+            self.process_action(command, player)
             if action == JUMP:
                 return 'backyard'
     

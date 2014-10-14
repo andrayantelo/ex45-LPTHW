@@ -27,7 +27,7 @@ ITEMS = 'items'
 JUMP = 'jump'
 CONTINUE = 'continue'
 RETRIEVE = 'retrieve'
-
+GATHER = 'gather'
 
 #self.command_dictionary = {SNIFF: self.sniff_text,
 #                                   LOOK: self.look_text,
