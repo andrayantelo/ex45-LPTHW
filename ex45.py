@@ -382,15 +382,8 @@ class Backyard(Scene):
         face and it had a few bald spots. The cat arches its back and stares
         at Piet with wide eyes.
         """)
-        self.fight_text = textwrap.dedent(
-        """ \n
-        Piet may be small but he thinks he is the biggest dog in the world.
-        'I can take that cat,' Piet thinks arrogantly to himself. Piet puffs 
-        up his chest and lets out a loud bark. The cat looks at him incredulously,
-        as if it's about to laugh. Then charges Piet, claws out. Piet lets 
-        out a yelp and cowers, his tail between his legs. The cat screeches
-        and continues to swipe at Piet with it's razor sharp claws. Eventually,
-        the cat gets bored and leaves Piet alone to die.
+        self.fight_text = textwrap.dedent("""
+        Piet decides he can fight this cat.
         """)
         self.run_text = textwrap.dedent(
         """ \n
@@ -419,6 +412,7 @@ class Backyard(Scene):
         Eventually, the cat leaves Piet alone to die.
         """)
         self.items = []
+        self.number_of_fights = []
         
     def enter(self, player):
         player.health_status()
@@ -432,9 +426,26 @@ class Backyard(Scene):
             action = self.process_action(command)
             if action == RUN:
                 return 'enchanted_forest'
-            elif action in (NOTHING, FIGHT):
+            elif action == NOTHING:
                 return 'death'
+            if action == FIGHT:
+                return 'fight'
                 
+class Fight(Scene):
+    
+    def __init__(self):
+        super(Fight, self).__init__()
+        self.backyard_fight_text = textwrap.dedent("""
+        iet may be small but he thinks he is the biggest dog in the world.
+        \"I can take that cat,\" Piet thinks arrogantly to himself. Piet puffs 
+        up his chest and lets out a loud bark. The cat looks at him incredulously,
+        as if it's about to laugh. Then charges Piet, claws out.
+        """)
+        
+        
+    def enter(self, player):
+        pass
+    
     
 class EnchantedForest(Scene):
     
@@ -689,7 +700,8 @@ class Map(object):
               'enchantedforest_2': EnchantedForestPartTwo(),
               'river': River(),
               'dogpark': DogPark(),
-              'death': Death()
+              'death': Death(),
+              'fight': Fight()
               }
               
     def __init__(self, start_scene):
