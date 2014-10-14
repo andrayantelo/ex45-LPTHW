@@ -28,6 +28,9 @@ JUMP = 'jump'
 CONTINUE = 'continue'
 RETRIEVE = 'retrieve'
 GATHER = 'gather'
+SWIPE = 'swipe'
+KICK = 'kick'
+BITE = 'bite'
 
 #self.command_dictionary = {SNIFF: self.sniff_text,
 #                                   LOOK: self.look_text,

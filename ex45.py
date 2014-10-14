@@ -7,7 +7,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
-                       GATHER)
+                       GATHER, SWIPE, KICK, BITE)
 import string
 
 def cool_print(text):
@@ -113,6 +113,12 @@ class Scene(object):
         There is nothing to retrieve.""")
         self.gather_text = textwrap.dedent("""
         there is nothing here to pick up or gather.""")
+        self.swipe_text = textwrap.dedent("""
+        There is nothing to swipe at.""")
+        self.kick_text = textwrap.dedent("""
+        Piet kicks his hind legs into the air.""")
+        self.bite_text = textwrap.dedent("""
+        Piet has nothing to bite on.""")
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -187,6 +193,12 @@ class Scene(object):
             action = CONTINUE
         elif any(w in words for w in ('retrieve', 'fetch', 'salvage')):
             action = RETRIEVE
+        elif any(w in words for w in ('punch', 'swipe', 'hit')):
+            action = SWIPE
+        elif 'kick' in words:
+            action = KICK
+        elif 'bite' in words:
+            action = BITE
             
         print action
         
@@ -245,6 +257,12 @@ class Scene(object):
             print "You have typed 'continue'."
         elif action == GATHER:
             print self.gather_text
+        elif action == SWIPE:
+            print self.swipe_text
+        elif action == KICK:
+            print self.kick_text
+        elif action == BITE:
+            print self.bite_text
         elif action == None:
             print "Try another command."
             
@@ -435,8 +453,16 @@ class Fight(Scene):
     
     def __init__(self):
         super(Fight, self).__init__()
+        self.swipe_text = textwrap.dedent("""
+        Piet takes a swipe at his enemy.""")
+        self.kick_text = textwrap.dedent("""
+        Piet kicks at his enemy with his hind legs.""")
+        self.bite_text = textwrap.dedent("""
+        Piet sinks his teeth into one of his enemy's limbs and doesn\'t 
+        let go.
+        """)
         self.backyard_fight_text = textwrap.dedent("""
-        iet may be small but he thinks he is the biggest dog in the world.
+        Piet may be small but he thinks he is the biggest dog in the world.
         \"I can take that cat,\" Piet thinks arrogantly to himself. Piet puffs 
         up his chest and lets out a loud bark. The cat looks at him incredulously,
         as if it's about to laugh. Then charges Piet, claws out.
