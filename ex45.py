@@ -356,6 +356,8 @@ class LivingRoom(Scene):
         
             action = self.parse_command(command)
             self.process_action(command, player)
+            if action == SNIFF:
+                player.items.append('medpack')
             if action == JUMP:
                 return 'backyard'
     
