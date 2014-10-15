@@ -65,6 +65,14 @@ class Player(Character):
         print "villain's health status:"
         villain.health_status()
         
+    def use_medpack(self, medpack):
+        medpack = 'medpack'
+        if medpack in self.items and self.status != 3:
+            print "Piet uses a medpack."
+            self.status = self.status + 1
+        else:
+            print "Health status is full."
+        
 class Villain(Character):
      
     def __init__(self):
