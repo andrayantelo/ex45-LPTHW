@@ -55,10 +55,19 @@ class Player(Character):
         print "You currently have the following items:"
         print self.items
         
-def Villain(Character):
+    def attack(self, villain):
+        print "attack method worked"
+        print villain.status
+        villain.health_status()
+        if villain.status == 0:
+            print "You have slain the villain!"
+        else:
+            villain.status =- 1
+        
+class Villain(Character):
      
     def __init__(self):
-        super(Character, self).__init__()
+        super(Villain, self).__init__()
         
             
 class Scene(object):
@@ -490,7 +499,7 @@ class Fight(Scene):
         self.tunnel_fight_text = textwrap.dedent("""
         Piet barks loudly but the spider is unfazed. The spider begins to advance.
         """)
-        
+        self.cat = Villain()
         
     def enter(self, player):
         player.health_status()
@@ -507,6 +516,10 @@ class Fight(Scene):
             
             action = self.parse_command(command)
             self.process_action(command, player)
+            
+            if any(action 'FIGHT', 'SWIPE', 'KICK', 'BITE']:
+                print "this worked"
+                player.attack(self.cat)
             
         
     
