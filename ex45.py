@@ -225,8 +225,6 @@ class Scene(object):
             action = BITE
         elif 'fight' in words:
             action = FIGHT
-            
-        print action
         
         return action
         
@@ -234,63 +232,63 @@ class Scene(object):
         action = self.parse_command(command)
         
         if action == LOOK:
-            print self.look_text
+            cool_print(self.look_text)
         elif action == NOTHING:
-            print self.nothing_text
+            cool_print(self.nothing_text)
         elif action == SNIFF:
-            print self.sniff_text
+            cool_print(self.sniff_text)
         elif action == PLAY:
-            print self.play_text
+            cool_print(self.play_text)
         elif action == DIG:
-            print self.dig_text
+            cool_print(self.dig_text)
         elif action == BARK:
-            print self.bark_text
+            cool_print(self.bark_text)
         elif action == ROLL:
-            print self.roll_text
+            cool_print(self.roll_text)
         elif action == WALK:
-            print self.walk_text
+            cool_print(self.walk_text)
         elif action == RUN:
-            print self.run_text
+            cool_print(self.run_text)
         elif action == STAND:
-            print self.stand_text
+            cool_print(self.stand_text)
         elif action == FIND:
-            print self.find_text
+            cool_print(self.find_text)
         elif action == INSIDE:
-            print self.inside_text
+            cool_print(self.inside_text)
         elif action == BACK:
-            print self.back_text
+            cool_print(self.back_text)
         elif action == FORWARD:
-            print self.forward_text
+            cool_print(self.forward_text)
         elif action == ITEMS:
             player.display_items()
         elif action == ENTER:
-            print self.enter_tunneltext
+            cool_print(self.enter_tunneltext)
         elif action == TRAIL:
-            print self.trail_text
+            cool_print(self.trail_text)
         elif action == SWORD:
-            print self.use_sword
+            cool_print(self.use_sword)
         elif action == BOAT:
-            print self.use_boat
+            cool_print(self.use_boat)
         elif action == DRINK:
-            print self.drink_water
+            cool_print(self.drink_water)
         elif action == HEALTH:
             player.health_status()
         elif action == JUMP:
-            print self.jump_text
+            cool_print(self.jump_text)
         elif action == RETRIEVE:
-            print self.retrieve_text
+            cool_print(self.retrieve_text)
         elif action == CONTINUE:
             print "You have typed 'continue'."
         elif action == GATHER:
-            print self.gather_text
+            cool_print(self.gather_text)
         elif action == SWIPE:
-            print self.swipe_text
+            cool_print(self.swipe_text)
         elif action == KICK:
-            print self.kick_text
+            cool_print(self.kick_text)
         elif action == BITE:
-            print self.bite_text
+            cool_print(self.bite_text)
         elif action == FIGHT:
-            return self.fight_text
+            cool_print(self.fight_text)
         elif action == None:
             print "Try another command."
             
@@ -404,7 +402,9 @@ class LivingRoom(Scene):
             self.process_action(command, player)
             if action == SNIFF:
                 player.items.append('medpack')
-            if action == JUMP:
+            elif action == GATHER:
+                player.items.append('wristwatch')
+            elif action == JUMP:
                 return 'backyard'
     
 class Backyard(Scene):
@@ -457,6 +457,15 @@ class Backyard(Scene):
         at Piet with its claws. Piet yelps as the cat continues to swipe.
         Eventually, the cat leaves Piet alone to die.
         """)
+        self.look_text = textwrap.dedent("""
+        Piet looks around but sees nothing he could use as a weapon.""")
+        self.sniff_text = textwrap.dedent("""
+        Piet sniffs the air but can only smell cat.""")
+        self.play_text = textwrap.dedent(""" 
+        Piet attemps to play with the cat but the cat swipes at him with it's
+        claws and barely misses Piet's face.""")
+        self.bark_text = textwrap.dedent("""
+        Piet barks loudly but the cat is unfazed.""")
         self.items = []
         self.number_of_fights = []
         
@@ -490,6 +499,8 @@ class Fight(Scene):
         Piet sinks his teeth into one of his enemy's limbs and doesn\'t 
         let go.
         """)
+        self.fight_text = textwrap.dedent("""
+        Piet punches his enemy in the face.""")
         self.backyard_fight_text = textwrap.dedent("""
         Piet may be small but he thinks he is the biggest dog in the world.
         \"I can take that cat,\" Piet thinks arrogantly to himself. Piet puffs 
@@ -517,9 +528,12 @@ class Fight(Scene):
             action = self.parse_command(command)
             self.process_action(command, player)
             
-            if any(action 'FIGHT', 'SWIPE', 'KICK', 'BITE']:
+            #if any(w in action for w in ('FIGHT', 'SWIPE', 'KICK', 'BITE')):
+            if action == 'FIGHT':
                 print "this worked"
                 player.attack(self.cat)
+            else:
+                return 'enchantedforest'
             
         
     
@@ -567,6 +581,11 @@ class EnchantedForest(Scene):
         a large Coral Snake!
         """)
         self.items = ['medpack', 'sword']
+        
+        def enter(self, player):
+            player.health_status()
+            player.display_items()
+            cool_print(enchanted_text)
     
 class Tunnel(Scene):
     
