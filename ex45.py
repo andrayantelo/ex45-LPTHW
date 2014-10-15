@@ -7,7 +7,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
-                       GATHER, SWIPE, KICK, BITE, FIGHT)
+                       GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK)
 import string
 
 def cool_print(text):
@@ -23,11 +23,12 @@ class Character(object):
         self.items = []
         self.status = 3
         self.fight_scene_count = []
+        self.name = 'name'
         
     def health_status(self):
         heart = u'\u2764'
         empty_heart = u'\u2661'
-        print "Your current health status:"
+        print "%s\'s current health status:" % self.name
         if self.status == 3:
             print heart, heart, heart
         if self.status == 2: 
@@ -46,6 +47,7 @@ class Player(Character):
         self.items = []
         self.status = 3
         self.fight_scene_count = []
+        self.name = 'Piet'
     
     def obtain_item(self, thing):
         self.items.append(thing)
@@ -57,17 +59,21 @@ class Player(Character):
         
     def attack(self, villain):
         print "attack method worked"
-        print villain.status
-        villain.health_status()
         if villain.status == 0:
             print "You have slain the villain!"
         else:
-            villain.status =- 1
+            villain.status = villain.status - 1
+        print "villain's health status:"
+        villain.health_status()
         
 class Villain(Character):
      
     def __init__(self):
         super(Villain, self).__init__()
+        self.name = 'name'
+        
+    def name_villain(self, name):
+        self.name = name
         
             
 class Scene(object):
@@ -143,6 +149,8 @@ class Scene(object):
         Piet has nothing to bite on.""")
         self.fight_text = textwrap.dedent("""
         There is no one around for Piet to fight with.""")
+        self.attack_text = textwrap.dedent("""
+        Piet attempts to attack himself but fails.""")
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -225,6 +233,8 @@ class Scene(object):
             action = BITE
         elif 'fight' in words:
             action = FIGHT
+        elif 'attack' in words:
+            action = ATTACK
         
         return action
         
@@ -289,6 +299,8 @@ class Scene(object):
             cool_print(self.bite_text)
         elif action == FIGHT:
             cool_print(self.fight_text)
+        elif action == ATTACK:
+            cool_print(self.attack_text)
         elif action == None:
             print "Try another command."
             
@@ -501,6 +513,8 @@ class Fight(Scene):
         """)
         self.fight_text = textwrap.dedent("""
         Piet punches his enemy in the face.""")
+        self.attack_text = textwrap.dedent("""
+        Piet lunges forward to attack.""")
         self.backyard_fight_text = textwrap.dedent("""
         Piet may be small but he thinks he is the biggest dog in the world.
         \"I can take that cat,\" Piet thinks arrogantly to himself. Piet puffs 
@@ -510,8 +524,22 @@ class Fight(Scene):
         self.tunnel_fight_text = textwrap.dedent("""
         Piet barks loudly but the spider is unfazed. The spider begins to advance.
         """)
-        self.cat = Villain()
+        self.enemy = Villain()
+
         
+    #def parse_command(self, command):
+     #   super(Fight, self).parse_command(command)
+     #   
+     #   if any(w in words for w in ('attack', 'strike', 'charge', 'rush')):
+     ##       action = ATTACK
+      #  return action
+        
+    #def process_action(self, command, player):
+    #    super(Fight, self).process_action(command, player)
+    #    
+    #    if any(w in action for w in (FIGHT, SWIPE, KICK, BITE, ATTACK)):
+    #        player.attack(self.cat)
+                
     def enter(self, player):
         player.health_status()
         player.display_items()
@@ -519,8 +547,10 @@ class Fight(Scene):
         
         if len(player.fight_scene_count) == 1:
             cool_print(self.backyard_fight_text)
+            self.enemy.name_villain('Cat')
         elif len(player.fight_scene_count) == 2:
             cool_print(self.tunnel_fight_text)
+            self.enemy.name_villain('Spider')
         
         while True:
             command = str(raw_input("Type a command.\n> "))
@@ -528,12 +558,14 @@ class Fight(Scene):
             action = self.parse_command(command)
             self.process_action(command, player)
             
-            #if any(w in action for w in ('FIGHT', 'SWIPE', 'KICK', 'BITE')):
-            if action == 'FIGHT':
-                print "this worked"
-                player.attack(self.cat)
-            else:
+            
+            if self.cat.status == 0:
+                print "You have defeated the enemy!"
                 return 'enchantedforest'
+            elif player.status == 0:
+                return 'death'
+            elif any(w in action for w in (ATTACK, FIGHT, BITE, SWIPE, KICK)):
+                player.attack(self.enemy)
             
         
     
@@ -582,10 +614,10 @@ class EnchantedForest(Scene):
         """)
         self.items = ['medpack', 'sword']
         
-        def enter(self, player):
-            player.health_status()
-            player.display_items()
-            cool_print(enchanted_text)
+    def enter(self, player):
+        player.health_status()
+        player.display_items()
+        cool_print(enchanted_text)
     
 class Tunnel(Scene):
     
