@@ -7,7 +7,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
-                       GATHER, SWIPE, KICK, BITE)
+                       GATHER, SWIPE, KICK, BITE, FIGHT)
 import string
 
 def cool_print(text):
@@ -22,6 +22,7 @@ class Player(object):
     def __init__(self):
         self.items = []
         self.status = 3
+        self.fight_scene_count = []
         
     def health_status(self):
         heart = u'\u2764'
@@ -46,7 +47,8 @@ class Player(object):
         print "You currently have the following items:"
         print self.items
         
-
+def Villain(object):
+    pass
             
 class Scene(object):
     
@@ -119,6 +121,8 @@ class Scene(object):
         Piet kicks his hind legs into the air.""")
         self.bite_text = textwrap.dedent("""
         Piet has nothing to bite on.""")
+        self.fight_text = textwrap.dedent("""
+        There is no one around for Piet to fight with.""")
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -199,6 +203,8 @@ class Scene(object):
             action = KICK
         elif 'bite' in words:
             action = BITE
+        elif 'fight' in words:
+            action = FIGHT
             
         print action
         
@@ -263,6 +269,8 @@ class Scene(object):
             print self.kick_text
         elif action == BITE:
             print self.bite_text
+        elif action == FIGHT:
+            return self.fight_text
         elif action == None:
             print "Try another command."
             
@@ -441,12 +449,13 @@ class Backyard(Scene):
             command = str(raw_input("Type a command.\n> "))
             
         
-            action = self.process_action(command)
+            action = self.parse_command(command)
+            self.process_action(command, player)
             if action == RUN:
                 return 'enchanted_forest'
             elif action == NOTHING:
                 return 'death'
-            if action == FIGHT:
+            elif action == FIGHT:
                 return 'fight'
                 
 class Fight(Scene):
@@ -467,10 +476,28 @@ class Fight(Scene):
         up his chest and lets out a loud bark. The cat looks at him incredulously,
         as if it's about to laugh. Then charges Piet, claws out.
         """)
+        self.tunnel_fight_text = textwrap.dedent("""
+        Piet barks loudly but the spider is unfazed. The spider begins to advance.
+        """)
         
         
     def enter(self, player):
-        pass
+        player.health_status()
+        player.display_items()
+        player.fight_scene_count.append(1)
+        
+        if len(player.fight_scene_count) == 1:
+            cool_print(self.backyard_fight_text)
+        elif len(player.fight_scene_count) == 2:
+            cool_print(self.tunnel_fight_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
+        
     
     
 class EnchantedForest(Scene):
@@ -592,19 +619,8 @@ class Tunnel(Scene):
         any of it's other legs. Piet slashed at the air in triumph. Then he 
         put the sword away and sprinted like his life depended on it to the 
         end of the tunnel.""")
-        self.fight = textwrap.dedent(
-        """ \n
-        Piet had nothing useful to use as a weapon. Piet barks loudly 
-        but the spider is unfazed. The spider begins to advance. Piet lunges
-        forward and bites into one of the spider's legs. He clamps down with
-        his jaws and does not let go. The spider shrieks in pain and tries
-        to wrestle free. Piet shakes his head with the leg still in his mouth
-        and manages to rip it off. The spider stares wildly at Piet with it's
-        four eyes then scurries off before Piet can do any more damage. 
-        'Wow, I can't believe I defeated a spider monster.' Piet thinks. Then
-        he remembers that it was time to get out of this tunnel and he begins to
-        sprint to the exit.
-        """)
+        self.fight_text = textwrap.dedent("""
+        Piet decides to fight.""")
         self.items = ['head lamp']
         
 class EnchantedForestPartTwo(Scene):

@@ -31,6 +31,7 @@ GATHER = 'gather'
 SWIPE = 'swipe'
 KICK = 'kick'
 BITE = 'bite'
+FIGHT = 'fight'
 
 #self.command_dictionary = {SNIFF: self.sniff_text,
 #                                   LOOK: self.look_text,
