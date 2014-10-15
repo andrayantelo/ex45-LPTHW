@@ -16,8 +16,8 @@ def cool_print(text):
         sys.stdout.flush()
         time.sleep(0.01)   
     print   
-    
-class Player(object):
+ 
+class Character(object):
     
     def __init__(self):
         self.items = []
@@ -38,6 +38,14 @@ class Player(object):
             print empty_heart, empty_heart, empty_heart
             print "Game over!"
             sys.exit()
+        
+class Player(Character):
+    
+    def __init__(self):
+        super(Player, self).__init__()
+        self.items = []
+        self.status = 3
+        self.fight_scene_count = []
     
     def obtain_item(self, thing):
         self.items.append(thing)
@@ -47,8 +55,11 @@ class Player(object):
         print "You currently have the following items:"
         print self.items
         
-def Villain(object):
-    pass
+def Villain(Character):
+     
+    def __init__(self):
+        super(Character, self).__init__()
+        
             
 class Scene(object):
     
