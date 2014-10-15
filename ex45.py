@@ -7,7 +7,8 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
-                       GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL)
+                       GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
+                       TOWEL)
 import string
 import random
 
@@ -143,8 +144,8 @@ class Scene(object):
         self.inside_text = textwrap.dedent(""" Piet is already inside.""")
         self.back_text = textwrap.dedent(""" It's too late to turn back now!""")
         self.forward_text = textwrap.dedent(""" Piet walks slowly forward.""")
-        self.enter_tunneltext = textwrap.dedent(""" 
-        No tunnel to be found around here!
+        self.enter_text = textwrap.dedent(""" 
+        There is nothing to enter.
         """)
         self.trail_text = textwrap.dedent(""" There isn't a trail in sight!""")
         self.use_sword = textwrap.dedent(""" Who said anything about a sword?""")
@@ -170,6 +171,9 @@ class Scene(object):
         Piet attempts to attack himself but fails.""")
         self.tunnel_text = textwrap.dedent("""
         There is no tunnel here.""")
+        self.quit_text = "Goodbye!"
+        self.towel_text = """
+        Don't forget to bring your towel!"""
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -222,7 +226,7 @@ class Scene(object):
                                         'back')):
             action = BACK
         elif any(w in words for w in ('onward', 'forward',
-                                       'ahead')):
+                                       'ahead', 'on')):
             action = FORWARD
         elif any(w in words for w in ('items', 'display')):
             action = ITEMS
@@ -256,7 +260,11 @@ class Scene(object):
             action = ATTACK
         elif 'tunnel' in words:
             action = TUNNEL
-        
+        elif 'quit' in words:
+            action = QUIT
+        elif 'towel' in words:
+            action = TOWEL
+            
         return action
         
     def process_action(self, command, player):
@@ -293,7 +301,7 @@ class Scene(object):
         elif action == ITEMS:
             player.display_items()
         elif action == ENTER:
-            cool_print(self.enter_tunneltext)
+            cool_print(self.enter_text)
         elif action == TRAIL:
             cool_print(self.trail_text)
         elif action == SWORD:
@@ -324,6 +332,10 @@ class Scene(object):
             cool_print(self.attack_text)
         elif action == TUNNEL:
             cool_print(self.tunnel_text)
+        elif action == QUIT:
+            sys.exit()
+        elif action == TOWEL:
+            cool_print(self.towel_text)
         elif action == 'None':
             print "Try another command."
             
@@ -350,6 +362,7 @@ class Introduction(Scene):
         
         print "To check health status type \"health status\""
         print "To check item inventory type \"display items\""
+        print "To quit type 'quit'"
         print "Type 'continue' to continue"
         
         while True:
@@ -638,7 +651,7 @@ class Trail(Scene):
         """)
         self.sniff_text = textwrap.dedent("""
         Piet uncovers a medpack!""")
-        self.items = [medpack]
+        self.items = ['medpack']
         self.forward_text = textwrap.dedent("""
         Piet continues onward.""")
         self.back_text = textwrap.dedent("""
@@ -647,7 +660,7 @@ class Trail(Scene):
     def enter(self, player):
         player.health_status()
         player.display_items()
-        cool_print(self.clearing_text)
+        cool_print(self.trailscene_text)
         
         while True:
             command = str(raw_input("Type a command.\n> "))
@@ -681,7 +694,7 @@ class Tunnel(Scene):
         self.fight_text = textwrap.dedent("""
         The hawk does not wish to fight. Besides Piet would be dead in a second.""")
         
-        self.correct_guess = textwrap.dedent(
+        self.towel_text = textwrap.dedent(
         """ \n
         The hawk squealed in excitement. 'That's a first!' He squawked
         as he tossed something at Piet. Piet sniffed at it. It was a small 
@@ -689,14 +702,57 @@ class Tunnel(Scene):
         Hawk,' Piet said politely. The Hawk rolled it's eyes and stepped 
         aside so that Piet could enter the dark tunnel. 
         """)
-        self.wrong_guess = textwrap.dedent(
+        self.wrong_guess = """ 
+        Sorry, Dog, that's the wrong answer!"""
+        self.last_guess = textwrap.dedent(
         """ \n
         'Sorry, Dog, that's the wrong answer!' The hawk cackles. Then 
         he swoops in and grabs Piet with his enormous claws. Piet shrieks
         as the hawk carries him off to a large nest where hungry baby hawks
         are waiting.
         """)
+        self.use_sword = textwrap.dedent(
+        """ \n
+        Piet pulls out his sword and grips it in his mouth. He takes
+        a swipe at the spider and cuts off one of the spider's legs. With
+        renewed confidence Piet swipes left and right with the sword. The 
+        spider did not know what to make of it. A dog with a sword? It had
+        never seen such a thing. It scurried off before Piet could cut off
+        any of it's other legs. Piet slashed at the air in triumph. Then he 
+        put the sword away and sprinted like his life depended on it to the 
+        end of the tunnel.""")
+        self.enter_text = """
+        You can't enter yet."""
+        self.guesses = []
         
+        self.items = ['head lamp']
+        
+    def enter(self, player):
+        player.health_status()
+        player.display_items()
+        cool_print(self.tunnelscene_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            self.guesses.append(1)
+            
+            if len(self.guesses) == 3:
+                cool_print(self.last_guess)
+                return 'death'
+        
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
+            if action == TOWEL:
+                return 'inside_tunnel'
+            else:
+                cool_print(self.wrong_guess)
+                numberofguesses = 3 - len(self.guesses)
+                print "%s guesses left!" % numberofguesses
+                
+class InsideTunnel(Scene):
+    
+    def __init__(self):
         self.inside_tunnel = textwrap.dedent(
         """ \n
         Piet switches on his headlamp and advances into the tunnel. It 
@@ -713,34 +769,8 @@ class Tunnel(Scene):
         It's a giant monster with eight spindly legs. A giant spider monster!
         Piet looks at it in horror.
         """)
-        self.use_sword = textwrap.dedent(
-        """ \n
-        Piet pulls out his sword and grips it in his mouth. He takes
-        a swipe at the spider and cuts off one of the spider's legs. With
-        renewed confidence Piet swipes left and right with the sword. The 
-        spider did not know what to make of it. A dog with a sword? It had
-        never seen such a thing. It scurried off before Piet could cut off
-        any of it's other legs. Piet slashed at the air in triumph. Then he 
-        put the sword away and sprinted like his life depended on it to the 
-        end of the tunnel.""")
-        self.fight_text = textwrap.dedent("""
-        Piet decides to fight.""")
-        self.items = ['head lamp']
-        
-    def enter(self, player):
-        player.health_status()
-        player.display_items()
-        cool_print(self.tunnelscene_text)
-        
-        while True:
-            command = str(raw_input("Type a command.\n> "))
             
-        
-            action = self.parse_command(command)
-            self.process_action(command, player)
             
-            if action == ENTER:
-                cool_print(self.enter_tunneltext)
         
 class EnchantedForestPartTwo(Scene):
     
@@ -937,6 +967,41 @@ class Home(Scene):
     def __init__(self):
         self.home_text = textwrap.dedent("""
         Piet has returned home with his owners.""")
+        self.sniff_text = textwrap.dedent("""
+        Piet sniffs around the living room and finds a long lost treat!
+        He quickly gobbles it up before his owners see.""")
+        self.look_text = textwrap.dedent("""
+        Piet looks around the room and sees his owners relaxing on the couch.
+        """)
+        self.jump_text = textwrap.dedent("""
+        Piet jumps up on the couch next to his owners. His owners tell him
+        to get off the couch. Then they tell him that he can't come up 
+        without being told to come up. They pat the couch and Piet excitedly
+        jumps up on the couch with them.""")
+        self.play_text = textwrap.dedent("""
+        Piet grabs his ball and begins to play. His owners laugh joyfully 
+        at him.""")
+        self.run_text = textwrap.dedent("""
+        Piet runs around the room barking happily.""")
+        self.stand_text = textwrap.dedent("""
+        Piet stands still.""")
+        self.sleep_text = textwrap.dedent("""
+        Piet curls up in his bed and takes a nap.""")
+        self.scratch_text = textwrap.dedent("""
+        Piet begins to scratch at the carpet. \"No!\" his owners yell at him.
+        Piet stops and looks sheepish.""")
+        
+    def enter(self, player):
+        player.health_status()
+        player.display_items()
+        cool_print(self.home_text)
+        print "To quit type 'quit'"
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+        
+            action = self.parse_command(command)
+            self.process_action(command, player)
     
 class Map(object):
     scenes = {'introduction': Introduction(),
@@ -944,7 +1009,9 @@ class Map(object):
               'backyard': Backyard(),
               'enchantedforest': EnchantedForest(),
               'clearing' : Clearing(),
+              'trail' : Trail(),
               'tunnel': Tunnel(),
+              'inside_tunnel' : InsideTunnel(),
               'enchantedforest_2': EnchantedForestPartTwo(),
               'river': River(),
               'dogpark': DogPark(),

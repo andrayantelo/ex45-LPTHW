@@ -34,6 +34,8 @@ BITE = 'bite'
 FIGHT = 'fight'
 ATTACK = 'attack'
 TUNNEL = 'tunnel'
+QUIT = 'quit'
+TOWEL = 'towel'
 
 #self.command_dictionary = {SNIFF: self.sniff_text,
 #                                   LOOK: self.look_text,
