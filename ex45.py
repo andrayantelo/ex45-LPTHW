@@ -7,7 +7,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
-                       GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK)
+                       GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL)
 import string
 import random
 
@@ -168,6 +168,8 @@ class Scene(object):
         There is no one around for Piet to fight with.""")
         self.attack_text = textwrap.dedent("""
         Piet attempts to attack himself but fails.""")
+        self.tunnel_text = textwrap.dedent("""
+        There is no tunnel here.""")
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -187,7 +189,7 @@ class Scene(object):
         #print "WORDS:", words
         
         #default action 
-        action = None
+        action = 'None'
         
         if 'look' in words:
             action = LOOK
@@ -252,6 +254,8 @@ class Scene(object):
             action = FIGHT
         elif 'attack' in words:
             action = ATTACK
+        elif 'tunnel' in words:
+            action = TUNNEL
         
         return action
         
@@ -318,7 +322,9 @@ class Scene(object):
             cool_print(self.fight_text)
         elif action == ATTACK:
             cool_print(self.attack_text)
-        elif action == None:
+        elif action == TUNNEL:
+            cool_print(self.tunnel_text)
+        elif action == 'None':
             print "Try another command."
             
             
@@ -513,93 +519,9 @@ class Backyard(Scene):
                 return 'enchanted_forest'
             elif action == NOTHING:
                 return 'death'
-            elif action == FIGHT:
+            elif action in [FIGHT, SWIPE, ATTACK, KICK, BITE]:
                 return 'fight'
                 
-class Fight(Scene):
-    
-    def __init__(self):
-        super(Fight, self).__init__()
-        self.swipe_text = textwrap.dedent("""
-        Piet takes a swipe at his enemy.""")
-        self.kick_text = textwrap.dedent("""
-        Piet kicks at his enemy with his hind legs.""")
-        self.bite_text = textwrap.dedent("""
-        Piet sinks his teeth into one of his enemy's limbs and doesn\'t 
-        let go.
-        """)
-        self.fight_text = textwrap.dedent("""
-        Piet punches his enemy in the face.""")
-        self.attack_text = textwrap.dedent("""
-        Piet lunges forward to attack.""")
-        self.look_text = textwrap.dedent("""
-        Piet looks into the eyes of his enemy and nearly wets himself.""")
-        self.sniff_text = textwrap.dedent("""
-        The stench of Piet's own fear wafts through the air.""")
-        self.play_text = textwrap.dedent("""
-        Attempting to distract the enemy, Piet gets into a playful stance.
-        The enemy laughs then quickly snarls and Piet recoils in fear.""")
-        self.sleep_text = textwrap.dedent("""
-        No time to sleep now! Must fight!""")
-        self.backyard_fight_text = textwrap.dedent("""
-        Piet may be small but he thinks he is the biggest dog in the world.
-        \"I can take that cat,\" Piet thinks arrogantly to himself. Piet puffs 
-        up his chest and lets out a loud bark. The cat looks at him incredulously,
-        as if it's about to laugh. Then charges Piet, claws out.
-        """)
-        self.tunnel_fight_text = textwrap.dedent("""
-        Piet barks loudly but the spider is unfazed. The spider begins to advance.
-        """)
-        self.enemy = Villain()
-
-        
-    #def parse_command(self, command):
-     #   super(Fight, self).parse_command(command)
-     #   
-     #   if any(w in words for w in ('attack', 'strike', 'charge', 'rush')):
-     ##       action = ATTACK
-      #  return action
-        
-    #def process_action(self, command, player):
-    #    super(Fight, self).process_action(command, player)
-    #    
-    #    if any(w in action for w in (FIGHT, SWIPE, KICK, BITE, ATTACK)):
-    #        player.attack(self.cat)
-                
-    def enter(self, player):
-        player.display_items()
-        player.fight_scene_count.append(1)
-        
-        if len(player.fight_scene_count) == 1:
-            cool_print(self.backyard_fight_text)
-            self.enemy.name_villain('Cat')
-        elif len(player.fight_scene_count) == 2:
-            cool_print(self.tunnel_fight_text)
-            self.enemy.name_villain('Spider')
-        
-        while True:
-            if player.status == 0:
-                return 'death'
-                
-            player.health_status()
-            command = str(raw_input("Type a command.\n> "))
-            
-            action = self.parse_command(command)
-            self.process_action(command, player)
-            
-            
-            if self.enemy.status == 0:
-                print "You have defeated the enemy!"
-                return 'enchantedforest'
-            elif any(w in action for w in (ATTACK, FIGHT, BITE, SWIPE, KICK)):
-                player.attack(self.enemy)
-            elif action not in [ATTACK, FIGHT, BITE, SWIPE, KICK, HEALTH, ITEMS]:
-                self.enemy.damage_player(player)
-            if player.status == 0:
-                print "%s has defeated you!" % self.enemy.name
-                return 'death'
-        
-    
     
 class EnchantedForest(Scene):
     
@@ -607,14 +529,14 @@ class EnchantedForest(Scene):
         super(EnchantedForest, self).__init__()
         self.enchanted_text = textwrap.dedent(
         """ \n
-        On the other side of the fence Piet finds himself at the border
-        of the Enchanted Forest. All the dogs referred to the forest as The
-        Enchanted Forest on account of all the strange things that happened
+        On the other side of the backyard's fence Piet finds himself at the border
+        of the Enchanted Forest. All the dogs referred to the forest as \"The
+        Enchanted Forest\" on account of all the strange things that happened
         to the dogs that dared to enter it alone, but he had often heard 
-        his owners refer to it with the words 'The Greenbelt'. Piet stops at 
+        his owners refer to it with the words \"The Greenbelt\". Piet stops at 
         the edge of the woods and contemplates his options. He could go back
         into the yard now that the cat was gone, but his owners weren't 
-        there and he needed to bring them their forgotten wristwatch!
+        there anyway.
         """)
         self.back_text = textwrap.dedent(
         """ \n
@@ -649,28 +571,59 @@ class EnchantedForest(Scene):
         player.health_status()
         player.display_items()
         cool_print(self.enchanted_text)
-    
-class Tunnel(Scene):
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+        
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
+            if action in [BARK, BACK]:
+                return 'death'
+            elif action == FORWARD:
+                return 'clearing'
+            elif action == SNIFF:
+                player.items.append('medpack')
+            elif action == LOOK:
+                player.items.append('sword')
+                
+class Clearing(Scene):
     
     def __init__(self):
-        super(Tunnel, self).__init__()
-        self.tunnel_text = textwrap.dedent(
+        super(Clearing, self).__init__()
+        self.clearing_text = textwrap.dedent(
         """ \n
         The clearing is large and covered in dirt and shrubs. Piet sees
         a small tunnel to the left and a dirt trail on the right.
         """)
-        self.enter_tunneltext = textwrap.dedent(
-        """ \n
-        Piet walks over to the entrance of a tunnel. A loud squawk sound
-        makes Piet freeze in his tracks. A large hawk swoops down and blocks
-        the tunnel entrance. Piet swallows audibly and takes a
-        step back. 'If you wish to use the tunnel you must correctly solve 
-        this riddle.' the Hawk screeches. Piet nods slowly.
+        self.trail_text = textwrap.dedent("""
+        Piet heads over to the trail.""")
+        self.tunnel_text = textwrap.dedent("""
+        Piet heads over to the tunnel entrance.""")
         
-        'What gets wetter and wetter the more it dries?' The hawk cackles 
-        as Piet looks at it stumped.
-        """)
-        self.trail_text = textwrap.dedent(
+    def enter(self, player):
+        player.health_status()
+        player.display_items()
+        cool_print(self.clearing_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+        
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
+            if action == TRAIL:
+                return 'trail'
+            if action in [TUNNEL, ENTER]:
+                return 'tunnel'
+                
+class Trail(Scene):
+    
+    def __init__(self):
+        super(Trail, self).__init__()
+        self.trailscene_text = textwrap.dedent(
         """ \n
         Piet heads over to the trail and begins to follow it. He 
         sniffs the ground as he walks but does not smell anything familiar. All 
@@ -683,6 +636,51 @@ class Tunnel(Scene):
         in The Enchanted Forest. Piet could either go forward or he could go 
         back the way he came.
         """)
+        self.sniff_text = textwrap.dedent("""
+        Piet uncovers a medpack!""")
+        self.items = [medpack]
+        self.forward_text = textwrap.dedent("""
+        Piet continues onward.""")
+        self.back_text = textwrap.dedent("""
+        Piet retraces his steps.""")
+        
+    def enter(self, player):
+        player.health_status()
+        player.display_items()
+        cool_print(self.clearing_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+        
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
+            if action == SNIFF:
+                player.items.append('medpack')
+            if action == FORWARD:
+                return 'enchantedforest_2'
+            if action == BACK:
+                return 'clearing'
+    
+class Tunnel(Scene):
+    
+    def __init__(self):
+        super(Tunnel, self).__init__()
+        self.tunnelscene_text = textwrap.dedent(
+        """ \n
+        Piet walks over to the entrance of the tunnel. A loud squawk sound
+        makes Piet freeze in his tracks. A large hawk swoops down and blocks
+        the tunnel entrance. Piet swallows audibly and takes a
+        step back. 'If you wish to use the tunnel you must correctly solve 
+        this riddle.' the Hawk screeches. Piet nods slowly.
+        
+        'What gets wetter and wetter the more it dries?' The hawk cackles 
+        as Piet looks at it stumped.
+        """)
+        self.fight_text = textwrap.dedent("""
+        The hawk does not wish to fight. Besides Piet would be dead in a second.""")
+        
         self.correct_guess = textwrap.dedent(
         """ \n
         The hawk squealed in excitement. 'That's a first!' He squawked
@@ -729,11 +727,26 @@ class Tunnel(Scene):
         Piet decides to fight.""")
         self.items = ['head lamp']
         
+    def enter(self, player):
+        player.health_status()
+        player.display_items()
+        cool_print(self.tunnelscene_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+        
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
+            if action == ENTER:
+                cool_print(self.enter_tunneltext)
+        
 class EnchantedForestPartTwo(Scene):
     
     def __init__(self):
         super(EnchantedForestPartTwo, self).__init__()
-        self.forward_text = textwrap.dedent(
+        self.enchantedforest2_text = textwrap.dedent(
         """ \n
         Piet decides to continue following the trail. Piet walks and 
         walks all day long. At one point he passes a small creek he gets
@@ -751,15 +764,13 @@ class EnchantedForestPartTwo(Scene):
         all over. 'Piet, where have you been!' His owner exclaimed. Piet
         barked excitedly and spun around in a circle. He was going home.
         """)
-        self.back_text = textwrap.dedent(
-        """ \n
-        Piet turns around and heads back. Who knows how long that trail 
-        would go for. He couldn't even smell his owners on it anyway.
-        """)
-        self.sniff_text = textwrap.dedent("""
-        Piet sniffs around and finds a medpack hidden in the shrubs.""")
-        self.items = ['medpack']
         
+    def enter(self, player):
+        player.health_status()
+        player.display_items()
+        cool_print(self.enchantedforest2_text)
+        
+        return 'home'
     
 class River(Scene):
     
@@ -825,7 +836,89 @@ class DogPark(Scene):
         Piet looks around and sees a dog treat nestled in the grass.
         He gobbles it up hungrily.
         """)
+
+class Fight(Scene):
+    
+    def __init__(self):
+        super(Fight, self).__init__()
+        self.swipe_text = textwrap.dedent("""
+        Piet takes a swipe at his enemy.""")
+        self.kick_text = textwrap.dedent("""
+        Piet kicks at his enemy with his hind legs.""")
+        self.bite_text = textwrap.dedent("""
+        Piet sinks his teeth into one of his enemy's limbs and doesn\'t 
+        let go.
+        """)
+        self.fight_text = textwrap.dedent("""
+        Piet punches his enemy in the face.""")
+        self.attack_text = textwrap.dedent("""
+        Piet lunges forward to attack.""")
+        self.look_text = textwrap.dedent("""
+        Piet looks into the eyes of his enemy and nearly wets himself.""")
+        self.sniff_text = textwrap.dedent("""
+        The stench of Piet's own fear wafts through the air.""")
+        self.play_text = textwrap.dedent("""
+        Attempting to distract the enemy, Piet gets into a playful stance.
+        The enemy laughs then quickly snarls and Piet recoils in fear.""")
+        self.sleep_text = textwrap.dedent("""
+        No time to sleep now! Must fight!""")
+        self.backyard_fight_text = textwrap.dedent("""
+        Piet may be small but he thinks he is the biggest dog in the world.
+        \"I can take that cat,\" Piet thinks arrogantly to himself. Piet puffs 
+        up his chest and lets out a loud bark. The cat looks at him incredulously,
+        as if it's about to laugh. Then charges Piet, claws out.
+        """)
+        self.tunnel_fight_text = textwrap.dedent("""
+        Piet barks loudly but the spider is unfazed. The spider begins to advance.
+        """)
+        self.enemy = Villain()
+
         
+    #def parse_command(self, command):
+     #   super(Fight, self).parse_command(command)
+     #   
+     #   if any(w in words for w in ('attack', 'strike', 'charge', 'rush')):
+     ##       action = ATTACK
+      #  return action
+        
+    #def process_action(self, command, player):
+    #    super(Fight, self).process_action(command, player)
+    #    
+    #    if any(w in action for w in (FIGHT, SWIPE, KICK, BITE, ATTACK)):
+    #        player.attack(self.cat)
+                
+    def enter(self, player):
+        player.display_items()
+        player.fight_scene_count.append(1)
+        
+        if len(player.fight_scene_count) == 1:
+            cool_print(self.backyard_fight_text)
+            self.enemy.name_villain('Cat')
+        elif len(player.fight_scene_count) == 2:
+            cool_print(self.tunnel_fight_text)
+            self.enemy.name_villain('Spider')
+        
+        while True:
+            if player.status == 0:
+                return 'death'
+            elif self.enemy.status == 0:
+                print 'You have defeated the enemy!'
+                return 'enchantedforest'
+                
+            player.health_status()
+            command = str(raw_input("Type a command.\n> "))
+            
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
+            if any(w in action for w in (ATTACK, FIGHT, BITE, SWIPE, KICK)):
+                player.attack(self.enemy)
+            elif action not in [ATTACK, FIGHT, BITE, SWIPE, KICK, HEALTH, ITEMS]:
+                self.enemy.damage_player(player)
+            if player.status == 0:
+                print "%s has defeated you!" % self.enemy.name
+                return 'death'
+
     
 class Death(Scene):
     
@@ -838,18 +931,26 @@ class Death(Scene):
     def enter(self, player):
         cool_print(self.death_text)
         sys.exit()
+        
+class Home(Scene):
+    
+    def __init__(self):
+        self.home_text = textwrap.dedent("""
+        Piet has returned home with his owners.""")
     
 class Map(object):
     scenes = {'introduction': Introduction(),
               'living_room': LivingRoom(),
               'backyard': Backyard(),
               'enchantedforest': EnchantedForest(),
+              'clearing' : Clearing(),
               'tunnel': Tunnel(),
               'enchantedforest_2': EnchantedForestPartTwo(),
               'river': River(),
               'dogpark': DogPark(),
               'death': Death(),
-              'fight': Fight()
+              'fight': Fight(),
+              'home': Home()
               }
               
     def __init__(self, start_scene):
