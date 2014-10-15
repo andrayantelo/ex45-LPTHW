@@ -84,7 +84,10 @@ class Villain(Character):
     def name_villain(self, name):
         self.name = name
         
-
+    def damage_victim(self):
+        pass  
+        
+        
 class Scene(object):
     
     def __init__(self):
