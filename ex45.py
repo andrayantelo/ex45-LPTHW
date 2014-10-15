@@ -9,6 +9,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
                        GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK)
 import string
+import random
 
 def cool_print(text):
     for i in text: 
@@ -62,7 +63,6 @@ class Player(Character):
         elif villain.status == 1:
             villain.status = villain.status - 1
             print "You have slain the villain!"
-        print "villain's health status:"
         villain.health_status()
         
     def use_medpack(self, medpack):
@@ -83,9 +83,14 @@ class Villain(Character):
         
     def name_villain(self, name):
         self.name = name
+        return self.name # is this necessary?
         
-    def damage_victim(self):
-        pass  
+    def damage_player(self, player):
+        attacks = ['swipe', 'hit', 'kick', 'punch', 'scratch', 'bite']
+        current_attack = random.choice(attacks)
+        print "%s has hit you with a %s attack!" %(self.name, current_attack)
+        player.status = player.status - 1
+        return player.status
         
         
 class Scene(object):
@@ -527,6 +532,15 @@ class Fight(Scene):
         Piet punches his enemy in the face.""")
         self.attack_text = textwrap.dedent("""
         Piet lunges forward to attack.""")
+        self.look_text = textwrap.dedent("""
+        Piet looks into the eyes of his enemy and nearly wets himself.""")
+        self.sniff_text = textwrap.dedent("""
+        The stench of Piet's own fear wafts through the air.""")
+        self.play_text = textwrap.dedent("""
+        Attempting to distract the enemy, Piet gets into a playful stance.
+        The enemy laughs then quickly snarls and Piet recoils in fear.""")
+        self.sleep_text = textwrap.dedent("""
+        No time to sleep now! Must fight!""")
         self.backyard_fight_text = textwrap.dedent("""
         Piet may be small but he thinks he is the biggest dog in the world.
         \"I can take that cat,\" Piet thinks arrogantly to himself. Piet puffs 
@@ -553,7 +567,6 @@ class Fight(Scene):
     #        player.attack(self.cat)
                 
     def enter(self, player):
-        player.health_status()
         player.display_items()
         player.fight_scene_count.append(1)
         
@@ -565,6 +578,10 @@ class Fight(Scene):
             self.enemy.name_villain('Spider')
         
         while True:
+            if player.status == 0:
+                return 'death'
+                
+            player.health_status()
             command = str(raw_input("Type a command.\n> "))
             
             action = self.parse_command(command)
@@ -574,11 +591,13 @@ class Fight(Scene):
             if self.enemy.status == 0:
                 print "You have defeated the enemy!"
                 return 'enchantedforest'
-            elif player.status == 0:
-                return 'death'
             elif any(w in action for w in (ATTACK, FIGHT, BITE, SWIPE, KICK)):
                 player.attack(self.enemy)
-            
+            elif action not in [ATTACK, FIGHT, BITE, SWIPE, KICK, HEALTH, ITEMS]:
+                self.enemy.damage_player(player)
+            if player.status == 0:
+                print "%s has defeated you!" % self.enemy.name
+                return 'death'
         
     
     
@@ -816,9 +835,9 @@ class Death(Scene):
         untimely death. Game over!
         """)
         
-        def enter(self):
-            cool_print(self.death_text)
-            sys.exit()
+    def enter(self, player):
+        cool_print(self.death_text)
+        sys.exit()
     
 class Map(object):
     scenes = {'introduction': Introduction(),
