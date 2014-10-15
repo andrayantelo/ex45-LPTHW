@@ -70,8 +70,10 @@ class Player(Character):
         if medpack in self.items and self.status != 3:
             print "Piet uses a medpack."
             self.status = self.status + 1
-        else:
+        elif self.status == 3:
             print "Health status is full."
+        elif medpack not in self.items:
+            print "%s has no medpacks." % self.name
         
 class Villain(Character):
      
@@ -82,7 +84,7 @@ class Villain(Character):
     def name_villain(self, name):
         self.name = name
         
-            
+
 class Scene(object):
     
     def __init__(self):
