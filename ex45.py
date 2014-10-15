@@ -14,7 +14,7 @@ def cool_print(text):
     for i in text: 
         sys.stdout.write(i)
         sys.stdout.flush()
-        time.sleep(0.01)   
+        time.sleep(0)   
     print   
  
 class Character(object):
@@ -37,8 +37,6 @@ class Character(object):
             print heart, empty_heart, empty_heart
         if self.status == 0:
             print empty_heart, empty_heart, empty_heart
-            print "Game over!"
-            sys.exit()
         
 class Player(Character):
     
@@ -59,10 +57,11 @@ class Player(Character):
         
     def attack(self, villain):
         print "attack method worked"
-        if villain.status == 0:
-            print "You have slain the villain!"
-        else:
+        if villain.status > 1:
             villain.status = villain.status - 1
+        elif villain.status == 1:
+            villain.status = villain.status - 1
+            print "You have slain the villain!"
         print "villain's health status:"
         villain.health_status()
         
@@ -559,7 +558,7 @@ class Fight(Scene):
             self.process_action(command, player)
             
             
-            if self.cat.status == 0:
+            if self.enemy.status == 0:
                 print "You have defeated the enemy!"
                 return 'enchantedforest'
             elif player.status == 0:
@@ -617,7 +616,7 @@ class EnchantedForest(Scene):
     def enter(self, player):
         player.health_status()
         player.display_items()
-        cool_print(enchanted_text)
+        cool_print(self.enchanted_text)
     
 class Tunnel(Scene):
     
