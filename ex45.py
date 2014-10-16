@@ -407,12 +407,6 @@ class LivingRoom(Scene):
         is the living room. Piet stared at the front door for a bit and
         then noticed that his owner had forgotten his wristwatch.
         """)
-        self.gather_text = textwrap.dedent(
-        """ 
-        The only thing around to pick up is the wristwatch. Piet gingerly
-        grasps it in his mouth and places it in his dog purse which he
-        wears around his neck.
-        """)
         self.sleep_text = textwrap.dedent(
         """ \n
         Piet whimpered at the door a little bit. Then he curled up into
@@ -439,11 +433,6 @@ class LivingRoom(Scene):
         chirping in the trees and leaves rustling in the wind. He sniffs
         the air and smells all sorts of wonderful smells. 
         """)
-       # self.sniff_text = textwrap.dedent(
-       # """ \n
-       # Piet sniffs around the living room and finds a med pack hidden
-       # behind the couch. He places it in his purse.
-       # """)
         self.jump_text = textwrap.dedent("""
         Piet goes and retrieves his dog purse then
         he turns to face the window. He musters up all of his strength and sprints
@@ -454,6 +443,7 @@ class LivingRoom(Scene):
         )
         self.items = ['medpack', 'wristwatch']
         self.amount_sniff_commands = []
+        self.amount_gather_commands = []
         
     def enter(self, player):
         player.health_status()
@@ -474,12 +464,21 @@ class LivingRoom(Scene):
                 hidden behind the couch. He places it in his purse.
                 """)
                 player.items.append('medpack')
+                continue
+            
+            if action == GATHER and len(self.amount_gather_commands) < 1:
+                self.amount_gather_commands.append(1)
+                print textwrap.dedent(""" 
+                The only thing around to pick up is the wristwatch. Piet gingerly
+                grasps it in his mouth and places it in his dog purse which he
+                wears around his neck.
+                 """)
+                player.items.append('wristwatch')
+                continue
                 
             self.process_action(command, player)
             
-            if action == GATHER:
-                player.items.append('wristwatch')
-            elif action == JUMP:
+            if action == JUMP:
                 return 'backyard'
                 
 class LivingRoom2(Scene):
