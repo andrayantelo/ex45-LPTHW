@@ -72,6 +72,7 @@ class Player(Character):
         if medpack in self.items and self.status != 3:
             print "Piet uses a medpack."
             self.status = self.status + 1
+            self.items.remove('medpack')
         elif self.status == 3:
             print "Health status is full."
         elif medpack not in self.items:
@@ -438,11 +439,11 @@ class LivingRoom(Scene):
         chirping in the trees and leaves rustling in the wind. He sniffs
         the air and smells all sorts of wonderful smells. 
         """)
-        self.sniff_text = textwrap.dedent(
-        """ \n
-        Piet sniffs around the living room and finds a med pack hidden
-        behind the couch. He places it in his purse.
-        """)
+       # self.sniff_text = textwrap.dedent(
+       # """ \n
+       # Piet sniffs around the living room and finds a med pack hidden
+       # behind the couch. He places it in his purse.
+       # """)
         self.jump_text = textwrap.dedent("""
         Piet goes and retrieves his dog purse then
         he turns to face the window. He musters up all of his strength and sprints
@@ -452,6 +453,7 @@ class LivingRoom(Scene):
         There is nowhere to dig!"""
         )
         self.items = ['medpack', 'wristwatch']
+        self.amount_sniff_commands = []
         
     def enter(self, player):
         player.health_status()
@@ -464,13 +466,89 @@ class LivingRoom(Scene):
             
         
             action = self.parse_command(command)
-            self.process_action(command, player)
-            if action == SNIFF:
+            
+            if action == SNIFF and len(self.amount_sniff_commands) < 1:
+                self.amount_sniff_commands.append(1)
+                print textwrap.dedent("""
+                Piet sniffs around the living room and finds a medpack
+                hidden behind the couch. He places it in his purse.
+                """)
                 player.items.append('medpack')
-            elif action == GATHER:
+                
+            self.process_action(command, player)
+            
+            if action == GATHER:
                 player.items.append('wristwatch')
             elif action == JUMP:
                 return 'backyard'
+                
+class LivingRoom2(Scene):
+    
+    def __init__(self):
+        super(LivingRoom2, self).__init__()
+        self.living2_text = textwrap.dedent("""
+        Piet is back in the living room.
+        """)
+        self.gather_text = textwrap.dedent(
+        """ 
+        The only thing around to pick up is the wristwatch. Piet gingerly
+        grasps it in his mouth and places it in his dog purse which he
+        wears around his neck.
+        """)
+        self.gather2_text = textwrap.dedent("""
+        Piet picks up his toy and places it in his purse.""")
+        self.sleep_text = textwrap.dedent(
+        """ \n
+        Piet whimpered at the door a little bit. Then he curled up into
+        a little ball and shut his eyes. 'Maybe if I go to sleep the time
+        will go faster and when I wake up they will be home,' he thought as
+        he drifted off to sleep.
+        """)
+        self.play_text = textwrap.dedent(
+        """ \n
+        Piet attacks his chew toy and plays with it a little. Then
+        he gets bored and looks back at the front door.
+        """)
+        self.scratch_text = textwrap.dedent(
+        """ \n
+        Piet scratches at the door but gets tired of it quickly. He
+        already knew that didn't bring his owners back.
+        """)
+        self.look_text = textwrap.dedent("""
+        Piet looks out the window and sees the cat staring back at him.
+        """)
+        self.sniff_text = textwrap.dedent("""
+        Piet finds a hidden treat!
+        """)
+        self.jump_text = textwrap.dedent("""
+        Piet musters up all of his strength and sprints
+        forward leaping out the open window.
+        """)
+        self.dig_text = textwrap.dedent("""
+        There is nowhere to dig!"""
+        )
+        self.items = ['medpack', 'wristwatch']
+        
+    def enter(self, player):
+        player.health_status()
+        player.display_items()
+        
+        cool_print(self.living2_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+        
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            if action == SNIFF:
+                player.items.append('treat')
+            elif action == GATHER:
+                player.items.append('ball')
+            elif action == JUMP:
+                return 'backyard'
+    
+    
     
 class Backyard(Scene):
     
@@ -549,6 +627,8 @@ class Backyard(Scene):
                 return 'enchanted_forest'
             elif action == NOTHING:
                 return 'death'
+            elif action == INSIDE:
+                return 'living_room2'
             elif action in [FIGHT, SWIPE, ATTACK, KICK, BITE]:
                 return 'fight'
                 
@@ -1028,6 +1108,7 @@ class Home(Scene):
 class Map(object):
     scenes = {'introduction': Introduction(),
               'living_room': LivingRoom(),
+              'living_room2': LivingRoom2(),
               'backyard': Backyard(),
               'enchantedforest': EnchantedForest(),
               'clearing' : Clearing(),
