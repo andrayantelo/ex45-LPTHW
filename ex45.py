@@ -8,7 +8,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
                        GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
-                       TOWEL, MEDPACK)
+                       TOWEL, MEDPACK, GIVE)
 import string
 import random
 
@@ -186,8 +186,10 @@ class Scene(object):
         self.tunnel_text = textwrap.dedent("""
         There is no tunnel here.""")
         self.quit_text = "Goodbye!"
-        self.towel_text = """
-        Don't forget to bring your towel!"""
+        self.towel_text = textwrap.dedent("""
+        Don't forget to bring your towel!""")
+        self.give_text = textwrap.dedent("""
+        Piet has nothing but love to give.""")
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -280,6 +282,8 @@ class Scene(object):
             action = TOWEL
         elif 'medpack' in words:
             action = MEDPACK
+        elif any(w in words for w in ('give', 'deliver', 'present', 'gift')):
+            action = GIVE
         
         return action
         
@@ -354,6 +358,8 @@ class Scene(object):
             cool_print(self.towel_text)
         elif action == MEDPACK:
             player.use_medpack()
+        elif action == GIVE:
+            cool_print(self.give_text)
         elif action == 'None':
             print "Try another command."
             
@@ -488,13 +494,9 @@ class LivingRoom2(Scene):
         self.living2_text = textwrap.dedent("""
         Piet is back in the living room.
         """)
-        self.gather_text = textwrap.dedent(
-        """ 
-        The only thing around to pick up is the wristwatch. Piet gingerly
-        grasps it in his mouth and places it in his dog purse which he
-        wears around his neck.
-        """)
-        self.gather2_text = textwrap.dedent("""
+        self.wristwatch_text = textwrap.dedent("""
+        Piet grabs his owner's wristwatch and places it in his purse.""")
+        self.gather_text = textwrap.dedent("""
         Piet picks up his toy and places it in his purse.""")
         self.sleep_text = textwrap.dedent(
         """ \n
@@ -516,9 +518,6 @@ class LivingRoom2(Scene):
         self.look_text = textwrap.dedent("""
         Piet looks out the window and sees the cat staring back at him.
         """)
-        self.sniff_text = textwrap.dedent("""
-        Piet finds a hidden treat!
-        """)
         self.jump_text = textwrap.dedent("""
         Piet musters up all of his strength and sprints
         forward leaping out the open window.
@@ -527,6 +526,7 @@ class LivingRoom2(Scene):
         There is nowhere to dig!"""
         )
         self.items = ['medpack', 'wristwatch']
+        self.treats_amount = []
         
     def enter(self, player):
         player.health_status()
@@ -539,12 +539,27 @@ class LivingRoom2(Scene):
             
         
             action = self.parse_command(command)
-            self.process_action(command, player)
-            if action == SNIFF:
+            
+            if action == SNIFF and len(self.treats_amount) < 1:
+                self.treats_amount.append(1)
+                print textwrap.dedent("""
+                Piet finds a hidden treat!""")
                 player.items.append('treat')
-            elif action == GATHER:
-                player.items.append('ball')
-            elif action == JUMP:
+                continue
+            
+            if action == GATHER:
+                if 'wristwatch' not in player.items:
+                    print self.wristwatch_text
+                    player.items.append('wristwatch')
+                    continue
+                else:
+                    self.process_action(command, player)
+                    player.items.append('ball')
+                    continue
+                    
+            self.process_action(command, player)
+            
+            if action == JUMP:
                 return 'backyard'
     
     
@@ -1066,6 +1081,7 @@ class Death(Scene):
 class Home(Scene):
     
     def __init__(self):
+        super(Home, self).__init__()
         self.home_text = textwrap.dedent("""
         Piet has returned home with his owners.""")
         self.sniff_text = textwrap.dedent("""
@@ -1091,6 +1107,11 @@ class Home(Scene):
         self.scratch_text = textwrap.dedent("""
         Piet begins to scratch at the carpet. \"No!\" his owners yell at him.
         Piet stops and looks sheepish.""")
+        self.givewristwatch_text = textwrap.dedent("""
+        Piet suddenly remembers his owner's wristwatch and brings it to him.
+        His owner exclaims in surprise, "Good boy! I've been looking for my
+        watch!" Then they hug.""")
+        self.giving_amount = []
         
     def enter(self, player):
         player.health_status()
@@ -1102,6 +1123,13 @@ class Home(Scene):
             
         
             action = self.parse_command(command)
+            
+            if action == GIVE and len(self.giving_amount) < 1 and 'wristwatch' in player.items:
+                self.giving_amount.append(1)
+                cool_print(self.givewristwatch_text)
+                player.items.remove('wristwatch')
+                continue
+                
             self.process_action(command, player)
     
 class Map(object):
