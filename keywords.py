@@ -36,6 +36,7 @@ ATTACK = 'attack'
 TUNNEL = 'tunnel'
 QUIT = 'quit'
 TOWEL = 'towel'
+MEDPACK = 'medpack'
 
 #self.command_dictionary = {SNIFF: self.sniff_text,
 #                                   LOOK: self.look_text,

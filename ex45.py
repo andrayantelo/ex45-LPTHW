@@ -8,7 +8,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
                        GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
-                       TOWEL)
+                       TOWEL, MEDPACK)
 import string
 import random
 
@@ -66,8 +66,9 @@ class Player(Character):
             print "You have slain the villain!"
         villain.health_status()
         
-    def use_medpack(self, medpack):
+    def use_medpack(self):
         medpack = 'medpack'
+        print " THIS IS WORKING!"
         if medpack in self.items and self.status != 3:
             print "Piet uses a medpack."
             self.status = self.status + 1
@@ -75,6 +76,18 @@ class Player(Character):
             print "Health status is full."
         elif medpack not in self.items:
             print "%s has no medpacks." % self.name
+            
+    def use_sword(self, villain):
+        sword_text = textwrap.dedent("""
+        Piet pulls out his sword and grips it in his mouth. He slashed 
+        the sword at his enemy.""")
+        sword = 'sword'
+        if sword in self.items:
+            print sword_text
+            villain.status = villain.status - 1
+        else:
+            print "Piet doesn't have a sword."
+        
         
 class Villain(Character):
      
@@ -182,7 +195,7 @@ class Scene(object):
         words = sentence.split()
         
         stop_words = ['a','the','an','and','at','that', 'watch', 'sword',
-                      'medpack', 'headlamp']
+                      'headlamp']
         words = [w for w in words if w not in stop_words]
         
         return words
@@ -264,7 +277,9 @@ class Scene(object):
             action = QUIT
         elif 'towel' in words:
             action = TOWEL
-            
+        elif 'medpack' in words:
+            action = MEDPACK
+        
         return action
         
     def process_action(self, command, player):
@@ -336,6 +351,8 @@ class Scene(object):
             sys.exit()
         elif action == TOWEL:
             cool_print(self.towel_text)
+        elif action == MEDPACK:
+            player.use_medpack()
         elif action == 'None':
             print "Try another command."
             
@@ -693,7 +710,8 @@ class Tunnel(Scene):
         """)
         self.fight_text = textwrap.dedent("""
         The hawk does not wish to fight. Besides Piet would be dead in a second.""")
-        
+        self.play_text = textwrap.dedent("""
+        The hawk does not wish to play.""")
         self.towel_text = textwrap.dedent(
         """ \n
         The hawk squealed in excitement. 'That's a first!' He squawked
@@ -711,16 +729,6 @@ class Tunnel(Scene):
         as the hawk carries him off to a large nest where hungry baby hawks
         are waiting.
         """)
-        self.use_sword = textwrap.dedent(
-        """ \n
-        Piet pulls out his sword and grips it in his mouth. He takes
-        a swipe at the spider and cuts off one of the spider's legs. With
-        renewed confidence Piet swipes left and right with the sword. The 
-        spider did not know what to make of it. A dog with a sword? It had
-        never seen such a thing. It scurried off before Piet could cut off
-        any of it's other legs. Piet slashed at the air in triumph. Then he 
-        put the sword away and sprinted like his life depended on it to the 
-        end of the tunnel.""")
         self.enter_text = """
         You can't enter yet."""
         self.guesses = []
@@ -744,6 +752,7 @@ class Tunnel(Scene):
             self.process_action(command, player)
             
             if action == TOWEL:
+                player.items.append('headlamp')
                 return 'inside_tunnel'
             else:
                 cool_print(self.wrong_guess)
@@ -769,8 +778,20 @@ class InsideTunnel(Scene):
         It's a giant monster with eight spindly legs. A giant spider monster!
         Piet looks at it in horror.
         """)
-            
-            
+        
+    def enter(self, player):
+        player.health_status()
+        player.display_items()
+        cool_print(self.inside_tunnel)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+        
+            if action == NOTHING:
+                return 'death'
+            elif action in [FIGHT, SWIPE, ATTACK, KICK, BITE]:
+                return 'fight'
+                        
         
 class EnchantedForestPartTwo(Scene):
     
@@ -918,6 +939,7 @@ class Fight(Scene):
     #        player.attack(self.cat)
                 
     def enter(self, player):
+        print "Type 'medpack' to use a medpack"
         player.display_items()
         player.fight_scene_count.append(1)
         
@@ -943,7 +965,7 @@ class Fight(Scene):
             
             if any(w in action for w in (ATTACK, FIGHT, BITE, SWIPE, KICK)):
                 player.attack(self.enemy)
-            elif action not in [ATTACK, FIGHT, BITE, SWIPE, KICK, HEALTH, ITEMS]:
+            elif action not in [ATTACK, FIGHT, BITE, SWIPE, KICK, HEALTH, ITEMS, MEDPACK]:
                 self.enemy.damage_player(player)
             if player.status == 0:
                 print "%s has defeated you!" % self.enemy.name
