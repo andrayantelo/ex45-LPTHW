@@ -8,7 +8,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
                        GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
-                       TOWEL, MEDPACK, GIVE)
+                       TOWEL, MEDPACK, GIVE, EAT)
 import string
 import random
 
@@ -88,6 +88,16 @@ class Player(Character):
             villain.status = villain.status - 1
         else:
             print "Piet doesn't have a sword."
+            
+    def eat_treat(self):
+        treat_text = textwrap.dedent("""
+        Piet gets out a treat and gobbles it up in 2.5 seconds.""")
+        treat = 'treat'
+        if treat in self.items:
+            print treat_text
+            self.items.remove(treat)
+        else:
+            print "Piet doesn't have any treats!"
         
         
 class Villain(Character):
@@ -284,6 +294,8 @@ class Scene(object):
             action = MEDPACK
         elif any(w in words for w in ('give', 'deliver', 'present', 'gift')):
             action = GIVE
+        elif any(w in words for w in ('eat', 'treat', 'gobble', 'gorge')):
+            action = EAT
         
         return action
         
@@ -360,6 +372,8 @@ class Scene(object):
             player.use_medpack()
         elif action == GIVE:
             cool_print(self.give_text)
+        elif action == EAT:
+            player.eat_treat()
         elif action == 'None':
             print "Try another command."
             

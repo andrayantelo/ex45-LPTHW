@@ -38,6 +38,7 @@ QUIT = 'quit'
 TOWEL = 'towel'
 MEDPACK = 'medpack'
 GIVE = 'give'
+EAT = 'eat'
 
 #self.command_dictionary = {SNIFF: self.sniff_text,
 #                                   LOOK: self.look_text,
