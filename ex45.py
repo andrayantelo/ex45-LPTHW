@@ -8,7 +8,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
                        GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
-                       TOWEL, MEDPACK, GIVE, EAT)
+                       TOWEL, MEDPACK, GIVE, EAT, HEADLAMP)
 import string
 import random
 
@@ -48,6 +48,7 @@ class Player(Character):
         self.status = 3
         self.fight_scene_count = []
         self.name = 'Piet'
+        self.headlamp_state = False
     
     def obtain_item(self, thing):
         self.items.append(thing)
@@ -98,7 +99,25 @@ class Player(Character):
             self.items.remove(treat)
         else:
             print "Piet doesn't have any treats!"
+            
+    def use_headlamp(self):
+        print self.headlamp_state
+        off_text = textwrap.dedent("""
+        Piet switches his headlamp off.""")
+        on_text = textwrap.dedent("""
+        Piet switches his headlamp on.""")
+        headlamp = 'headlamp'
+        if headlamp not in self.items:
+            print "Piet does not have a headlamp."
+        else:
+            if self.headlamp_state == False:
+                print on_text
+                self.headlamp_state = True
+            elif self.headlamp_state == True:
+                print off_text
+                self.headlamp_state = False
         
+        return self.headlamp_state
         
 class Villain(Character):
      
@@ -207,8 +226,7 @@ class Scene(object):
         sentence = sentence.lower()
         words = sentence.split()
         
-        stop_words = ['a','the','an','and','at','that', 'watch', 'sword',
-                      'headlamp']
+        stop_words = ['a','the','an','and','at','that', 'watch']
         words = [w for w in words if w not in stop_words]
         
         return words
@@ -216,7 +234,7 @@ class Scene(object):
         
     def parse_command(self, sentence):
         words = self.clean_text(sentence)
-        #print "WORDS:", words
+        print "WORDS:", words
         
         #default action 
         action = 'None'
@@ -296,7 +314,9 @@ class Scene(object):
             action = GIVE
         elif any(w in words for w in ('eat', 'treat', 'gobble', 'gorge')):
             action = EAT
-        
+        elif 'headlamp' in words:
+            action = HEADLAMP
+        print action
         return action
         
     def process_action(self, command, player):
@@ -374,6 +394,8 @@ class Scene(object):
             cool_print(self.give_text)
         elif action == EAT:
             player.eat_treat()
+        elif action == HEADLAMP:
+            player.use_headlamp()
         elif action == 'None':
             print "Try another command."
             
@@ -828,8 +850,8 @@ class Tunnel(Scene):
         Hawk,' Piet said politely. The Hawk rolled it's eyes and stepped 
         aside so that Piet could enter the dark tunnel. 
         """)
-        self.wrong_guess = """ 
-        Sorry, Dog, that's the wrong answer!"""
+        self.wrong_guess = textwrap.dedent(""" 
+        Sorry, Dog, that's the wrong answer!""")
         self.last_guess = textwrap.dedent(
         """ \n
         'Sorry, Dog, that's the wrong answer!' The hawk cackles. Then 
@@ -880,7 +902,7 @@ class InsideTunnel(Scene):
         to the end' So, Piet begins to sprint, dodging a couple of stones here and there. 
         Suddenly, Piet can see a light at the end of the tunnel. It was still a 
         little distant but it was not far now. With a burst of adrenaline, 
-        Piet began to run just a little faster. Then, without warning, a 
+        Piet begins to run just a little faster. Then, without warning, a 
         large object blocks the view of the light at the end of the tunnel. 
         Piet stops running abruptly. He shines his head lamp onto the object.
         It's a giant monster with eight spindly legs. A giant spider monster!
@@ -891,10 +913,14 @@ class InsideTunnel(Scene):
         player.health_status()
         player.display_items()
         cool_print(self.inside_tunnel)
+        player.headlamp_state = True
         
         while True:
-            command = str(raw_input("Type a command.\n> "))
+            command = str(raw_input("Type a command.\n> "))            
         
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
             if action == NOTHING:
                 return 'death'
             elif action in [FIGHT, SWIPE, ATTACK, KICK, BITE]:
@@ -1073,7 +1099,8 @@ class Fight(Scene):
             
             if any(w in action for w in (ATTACK, FIGHT, BITE, SWIPE, KICK)):
                 player.attack(self.enemy)
-            elif action not in [ATTACK, FIGHT, BITE, SWIPE, KICK, HEALTH, ITEMS, MEDPACK]:
+            elif action not in [ATTACK, FIGHT, BITE, SWIPE, KICK, HEALTH,
+                                 ITEMS, MEDPACK, HEADLAMP]:
                 self.enemy.damage_player(player)
             if player.status == 0:
                 print "%s has defeated you!" % self.enemy.name
