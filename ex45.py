@@ -49,6 +49,7 @@ class Player(Character):
         self.fight_scene_count = []
         self.name = 'Piet'
         self.headlamp_state = False
+        self.player_in_dark = False
     
     def obtain_item(self, thing):
         self.items.append(thing)
@@ -59,12 +60,15 @@ class Player(Character):
         print self.items
         
     def attack(self, villain):
-        print "attack method worked"
-        if villain.status > 1:
-            villain.status = villain.status - 1
-        elif villain.status == 1:
-            villain.status = villain.status - 1
-            print "You have slain the villain!"
+        if headlamp_state == False and self.player_in_dark:
+            print "Piet missed!"
+        else:
+            print "attack method worked"
+            if villain.status > 1:
+                villain.status = villain.status - 1
+            elif villain.status == 1:
+                villain.status = villain.status - 1
+                print "You have slain the villain!"
         villain.health_status()
         
     def use_medpack(self):
@@ -80,15 +84,18 @@ class Player(Character):
             print "%s has no medpacks." % self.name
             
     def use_sword(self, villain):
-        sword_text = textwrap.dedent("""
-        Piet pulls out his sword and grips it in his mouth. He slashed 
-        the sword at his enemy.""")
-        sword = 'sword'
-        if sword in self.items:
-            print sword_text
-            villain.status = villain.status - 1
+        if headlamp_state == False and self.player_in_dark:
+            print "Piet missed!"
         else:
-            print "Piet doesn't have a sword."
+            sword_text = textwrap.dedent("""
+            Piet pulls out his sword and grips it in his mouth. He slashed 
+            the sword at his enemy.""")
+            sword = 'sword'
+            if sword in self.items:
+                print sword_text
+                villain.status = villain.status - 1
+            else:
+                print "Piet doesn't have a sword."
             
     def eat_treat(self):
         treat_text = textwrap.dedent("""
@@ -399,7 +406,10 @@ class Scene(object):
         elif action == 'None':
             print "Try another command."
             
-            
+    def enter(self, player):
+        player.player_in_dark = False
+        player.health_status()
+        player.display_items()
         
         
 class Introduction(Scene):
@@ -418,6 +428,7 @@ class Introduction(Scene):
         There is nowhere to dig.""")
         
     def enter(self, player):
+        super(Introduction, self).enter(player)
         cool_print(self.intro_text)
         
         print "To check health status type \"health status\""
@@ -488,8 +499,7 @@ class LivingRoom(Scene):
         self.amount_gather_commands = []
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(LivingRoom, self).enter(player)
         
         cool_print(self.living_text)
         
@@ -565,8 +575,7 @@ class LivingRoom2(Scene):
         self.treats_amount = []
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(LivingRoom2, self).enter(player)
         
         cool_print(self.living2_text)
         
@@ -663,8 +672,8 @@ class Backyard(Scene):
         self.number_of_fights = []
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(Backyard, self).enter(player)
+        
         cool_print(self.backyard_text)
         
         while True:
@@ -679,7 +688,7 @@ class Backyard(Scene):
                 return 'death'
             elif action == INSIDE:
                 return 'living_room2'
-            elif action in [FIGHT, SWIPE, ATTACK, KICK, BITE]:
+            elif action in [FIGHT, SWIPE, ATTACK, KICK, BITE, CONTINUE]:
                 return 'fight'
                 
     
@@ -728,8 +737,8 @@ class EnchantedForest(Scene):
         self.items = ['medpack', 'sword']
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(EnchantedForest, self).enter(player)
+        
         cool_print(self.enchanted_text)
         
         while True:
@@ -763,8 +772,8 @@ class Clearing(Scene):
         Piet heads over to the tunnel entrance.""")
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(Clearing, self).enter(player)
+        
         cool_print(self.clearing_text)
         
         while True:
@@ -805,8 +814,8 @@ class Trail(Scene):
         Piet retraces his steps.""")
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(Trail, self).enter(player)
+        
         cool_print(self.trailscene_text)
         
         while True:
@@ -866,8 +875,8 @@ class Tunnel(Scene):
         self.items = ['head lamp']
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(Tunnel, self).enter(player)
+        
         cool_print(self.tunnelscene_text)
         
         while True:
@@ -892,6 +901,7 @@ class Tunnel(Scene):
 class InsideTunnel(Scene):
     
     def __init__(self):
+        super(InsideTunnel, self).__init__()
         self.inside_tunnel = textwrap.dedent(
         """ \n
         Piet switches on his headlamp and advances into the tunnel. It 
@@ -908,12 +918,15 @@ class InsideTunnel(Scene):
         It's a giant monster with eight spindly legs. A giant spider monster!
         Piet looks at it in horror.
         """)
+        self.fight_text = textwrap.dedent("""
+        The fight is on!""")
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(InsideTunnel, self).enter(player)
+        
         cool_print(self.inside_tunnel)
         player.headlamp_state = True
+        player.player_in_dark = True
         
         while True:
             command = str(raw_input("Type a command.\n> "))            
@@ -923,7 +936,7 @@ class InsideTunnel(Scene):
             
             if action == NOTHING:
                 return 'death'
-            elif action in [FIGHT, SWIPE, ATTACK, KICK, BITE]:
+            elif action in [FIGHT, SWIPE, ATTACK, KICK, BITE, CONTINUE]:
                 return 'fight'
                         
         
@@ -950,9 +963,10 @@ class EnchantedForestPartTwo(Scene):
         barked excitedly and spun around in a circle. He was going home.
         """)
         
+        
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(EnchantedForestPartTwo, self).enter(player)
+        
         cool_print(self.enchantedforest2_text)
         
         return 'home'
@@ -988,6 +1002,9 @@ class River(Scene):
         Piet takes a couple of sips of the fresh river water.
         """)
         
+    def enter(self, player):
+        super(River, self).enter(player)
+        player.player_in_dark = False
         
     
 class DogPark(Scene):
@@ -1021,6 +1038,9 @@ class DogPark(Scene):
         Piet looks around and sees a dog treat nestled in the grass.
         He gobbles it up hungrily.
         """)
+        
+    def enter(self, player):
+        super(DogPark, self).enter(player)
 
 class Fight(Scene):
     
@@ -1089,6 +1109,7 @@ class Fight(Scene):
                 return 'death'
             elif self.enemy.status == 0:
                 print 'You have defeated the enemy!'
+                self.enemy.status = 3
                 return 'enchantedforest'
                 
             player.health_status()
@@ -1102,6 +1123,11 @@ class Fight(Scene):
             elif action not in [ATTACK, FIGHT, BITE, SWIPE, KICK, HEALTH,
                                  ITEMS, MEDPACK, HEADLAMP]:
                 self.enemy.damage_player(player)
+            elif player.headlamp_state == False:
+                self.enemy.damage_player(player)
+                print "\"I can't see!\""
+                # I want to piet to miss all his hits when headlamp is off
+                continue
             if player.status == 0:
                 print "%s has defeated you!" % self.enemy.name
                 return 'death'
@@ -1155,8 +1181,8 @@ class Home(Scene):
         self.giving_amount = []
         
     def enter(self, player):
-        player.health_status()
-        player.display_items()
+        super(Home, self).enter(player)
+        
         cool_print(self.home_text)
         print "To quit type 'quit'"
         while True:
