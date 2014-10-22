@@ -8,7 +8,7 @@ from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
                        GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
-                       TOWEL, MEDPACK, GIVE, EAT, HEADLAMP)
+                       TOWEL, MEDPACK, GIVE, EAT, HEADLAMP, BALL)
 import string
 import random
 
@@ -46,10 +46,11 @@ class Player(Character):
         super(Player, self).__init__()
         self.items = []
         self.status = 3
-        self.fight_scene_count = []
+        self.fight_scene_count = 0
         self.name = 'Piet'
         self.headlamp_state = False
         self.player_in_dark = False
+        
     
     def obtain_item(self, thing):
         self.items.append(thing)
@@ -125,6 +126,12 @@ class Player(Character):
                 self.headlamp_state = False
         
         return self.headlamp_state
+        
+    def use_ball(self):
+        if 'ball' in self.items:
+            print "Piet takes out a ball and tosses it in the air."
+        else:
+            print "Piet doesn't have a ball."
         
 class Villain(Character):
      
@@ -323,6 +330,10 @@ class Scene(object):
             action = EAT
         elif 'headlamp' in words:
             action = HEADLAMP
+        elif 'swim' in words:
+            action = SWIM
+        elif 'ball' in words:
+            action = BALL
         print action
         return action
         
@@ -403,6 +414,8 @@ class Scene(object):
             player.eat_treat()
         elif action == HEADLAMP:
             player.use_headlamp()
+        elif action == BALL:
+            player.use_ball()
         elif action == 'None':
             print "Try another command."
             
@@ -920,6 +933,16 @@ class InsideTunnel(Scene):
         """)
         self.fight_text = textwrap.dedent("""
         The fight is on!""")
+        self.look_text = textwrap.dedent("""
+        Piet looks up into the spider's eight eyes.""")
+        self.sniff_text = textwrap.dedent("""
+        Piet sniffs and gags at the foul smell.""")
+        self.play_text = textwrap.dedent("""
+        It doesn't look like the spider wants to play.""")
+        self.bark_text = textwrap.dedent("""
+        Piet barks feebly.""")
+        self.gather_text = textwrap.dedent("""
+        Best not to touch the spider.""")
         
     def enter(self, player):
         super(InsideTunnel, self).enter(player)
@@ -927,9 +950,11 @@ class InsideTunnel(Scene):
         cool_print(self.inside_tunnel)
         player.headlamp_state = True
         player.player_in_dark = True
+        print "Type 'continue' to continue"
         
         while True:
-            command = str(raw_input("Type a command.\n> "))            
+            command = str(raw_input("Type a command.\n> ")) 
+                       
         
             action = self.parse_command(command)
             self.process_action(command, player)
@@ -993,7 +1018,7 @@ class River(Scene):
         Piet looks around and finds a small dog size boat anchored to 
         the river bed.
         """)
-        self.use_boat = textwrap.dedent(
+        self.boat_text = textwrap.dedent(
         """ \n
         Piet leaps into the boat pulls up the anchor. Then he grabs a 
         paddle with his mouth and begins to paddle across the river.
@@ -1005,6 +1030,26 @@ class River(Scene):
     def enter(self, player):
         super(River, self).enter(player)
         player.player_in_dark = False
+        player.headlamp_state = False
+        
+        cool_print(self.river_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))            
+        
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
+            if action == SWIM:
+                return 'death'
+            elif action == LOOK:
+                player.items.append('boat')
+            elif action == BOAT and 'boat' in player.items:
+                cool_print(self.boat_text)
+                return 'dogpark'
+            elif action == DRINK:
+                player.status = player.status + 1
+        
         
     
 class DogPark(Scene):
@@ -1038,9 +1083,30 @@ class DogPark(Scene):
         Piet looks around and sees a dog treat nestled in the grass.
         He gobbles it up hungrily.
         """)
+        self.sniff_text = textwrap.dedent("""
+        Piet can smell hundreds of different dogs.""")
+        self.run_text = textwrap.dedent("""
+        Piet picks a random dog and starts running wildly around behind it. 
+        They begin a long game of chase.""")
+        self.jump_text = textwrap.dedent("""
+        Piet jumps over another dog.""")
+        
         
     def enter(self, player):
         super(DogPark, self).enter(player)
+        
+        cool_print(self.dogpark_text)
+        
+        while True:
+            command = str(raw_input("Type a command.\n> ")) 
+                       
+        
+            action = self.parse_command(command)
+            self.process_action(command, player)
+            
+            if action == PLAY:
+                return 'home'
+            
 
 class Fight(Scene):
     
@@ -1095,22 +1161,26 @@ class Fight(Scene):
     def enter(self, player):
         print "Type 'medpack' to use a medpack"
         player.display_items()
-        player.fight_scene_count.append(1)
+        player.fight_scene_count = player.fight_scene_count + 1
         
-        if len(player.fight_scene_count) == 1:
+        if player.fight_scene_count == 1:
             cool_print(self.backyard_fight_text)
             self.enemy.name_villain('Cat')
-        elif len(player.fight_scene_count) == 2:
+        elif player.fight_scene_count == 2:
             cool_print(self.tunnel_fight_text)
             self.enemy.name_villain('Spider')
         
         while True:
             if player.status == 0:
                 return 'death'
-            elif self.enemy.status == 0:
+            elif self.enemy.status == 0 and player.fight_scene_count == 1:
                 print 'You have defeated the enemy!'
                 self.enemy.status = 3
                 return 'enchantedforest'
+            elif self.enemy.status == 0 and player.fight_scene_count == 2:
+                print "You have defeated the enemy!"
+                self.enemy.status = 3
+                return 'river'
                 
             player.health_status()
             command = str(raw_input("Type a command.\n> "))
