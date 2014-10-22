@@ -60,7 +60,7 @@ class Player(Character):
         print self.items
         
     def attack(self, villain):
-        if headlamp_state == False and self.player_in_dark:
+        if self.headlamp_state == False and self.player_in_dark:
             print "Piet missed!"
         else:
             print "attack method worked"
@@ -84,7 +84,7 @@ class Player(Character):
             print "%s has no medpacks." % self.name
             
     def use_sword(self, villain):
-        if headlamp_state == False and self.player_in_dark:
+        if self.headlamp_state == False and self.player_in_dark:
             print "Piet missed!"
         else:
             sword_text = textwrap.dedent("""
