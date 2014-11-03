@@ -1,3 +1,5 @@
+from scene import *
+
 class Introduction(Scene):
     
     def __init__(self):
