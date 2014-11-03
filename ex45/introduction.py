@@ -1,4 +1,6 @@
 from scene import *
+from characters import *
+from ex45 import *
 
 class Introduction(Scene):
     

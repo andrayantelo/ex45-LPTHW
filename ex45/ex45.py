@@ -1,16 +1,22 @@
 # Piet's fantasy adventure
 
-import sys
-import textwrap
 import time
-from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
-                       RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
-                       BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
-                       BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
-                       GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
-                       TOWEL, MEDPACK, GIVE, EAT, HEADLAMP, BALL)
-import string
-import random
+from scene import *
+from introduction import *
+from livingroom import *
+from backyard import *
+from enchantedforest import *
+from clearing import *
+from trail import *
+from tunnel import *
+from insidetunnel import *
+from enchantedforestparttwo import *
+from river import *
+from dogpark import *
+from fight import *
+from home import *
+from death import *
+from characters import *
 
 def cool_print(text):
     for i in text: 

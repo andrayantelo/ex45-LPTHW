@@ -1,3 +1,15 @@
+import sys
+import textwrap
+from keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
+                       RUN, STAND, FIND, SLEEP, SCRATCH, FIGHT, INSIDE, 
+                       BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
+                       BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
+                       GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
+                       TOWEL, MEDPACK, GIVE, EAT, HEADLAMP, BALL)
+import string
+from characters import *
+from ex45 import *
+
 class Scene(object):
     
     def __init__(self):
