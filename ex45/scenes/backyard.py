@@ -77,7 +77,7 @@ class Backyard(sc.Scene):
             action = self.parse_command(command)
             self.process_action(command, player)
             if action == sc.RUN:
-                return 'enchanted_forest'
+                return 'enchantedforest'
             elif action == sc.NOTHING:
                 return 'death'
             elif action == sc.INSIDE:
