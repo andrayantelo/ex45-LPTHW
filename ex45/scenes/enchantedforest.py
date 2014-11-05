@@ -31,14 +31,17 @@ class EnchantedForest(sc.Scene):
         find them. Piet enters the Enchanted Forest and walks along the dirt
         past trees and shrubs. Eventually he reaches a large clearing.
         """)
+        self.original_sniff = self.sniff_text
         self.sniff_text = textwrap.dedent(
         """ 
-        Piet finds a medpack nestled in the dirt.
+        Piet finds a medpack nestled in the dirt. Acquired medpack!
         """)
+        self.original_look = self.look_text
         self.look_text = textwrap.dedent(
         """ \n
         Piet notices something shiny near some rocks. It's a small
         sword with a handle shaped perfectly to be held in a dog's mouth.
+        You have acquired a sword!
         """)
         self.bark_text = textwrap.dedent(
         """ \n
@@ -47,6 +50,7 @@ class EnchantedForest(sc.Scene):
         a large Coral Snake!
         """)
         self.items = ['medpack', 'sword']
+        
         
     def enter(self, player):
         super(EnchantedForest, self).enter(player)
@@ -64,7 +68,11 @@ class EnchantedForest(sc.Scene):
                 return 'death'
             elif action == sc.FORWARD:
                 return 'clearing'
-            elif action == sc.SNIFF:
+            elif action == sc.SNIFF and 'medpack' in self.items:
+                self.items.remove('medpack')
                 player.items.append('medpack')
-            elif action == sc.LOOK:
+                self.sniff_text = self.original_sniff
+            elif action == sc.LOOK and 'sword' in self.items:
+                self.items.remove('sword')
                 player.items.append('sword')
+                self.look_text = self.original_look

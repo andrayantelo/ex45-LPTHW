@@ -98,12 +98,38 @@ class Scene(object):
         sentence = sentence.lower()
         words = sentence.split()
         
-        stop_words = ['a','the','an','and','at','that', 'watch']
+        stop_words = ['a','the','an','and','at','that', 'watch', 'on', 'up',
+                      'off','down']
         words = [w for w in words if w not in stop_words]
         
         return words
         
-        
+        verb_dictionary = { 'look': LOOK, 'nothing': NOTHING, 'pick': GATHER,
+                            'grab': GATHER, 'lift': GATHER, 'gather' GATHER,
+                            'sniff': SNIFF, 'smell': SNIFF, 'scent': SNIFF,
+                            'inhale': SNIFF, 'chew': CHEW, 'play': PLAY, 
+                            'dig': DIG, 'bark': BARK, 'roll': ROLL, 'rollover': ROLL,
+                            'walk': WALK, 'stroll': WALK, 'step': WALK, 'march': WALK,
+                            'run': RUN, 'sprint': RUN, 'race': RUN, 'dash': DASH, 
+                            'stand': STAND, 'find': FIND, 'track': find, 'inside': INSIDE,
+                            'indoors': INSIDE, 'return': BACK, 'retreat': BACK, 'back': BACK,
+                            'onward': FORWARD, 'forward': FORWARD, 'ahead': FORWARD,
+                            'items': ITEMS, 'display': ITEMS, 'enter': IN, 'in': IN, 
+                            'trail': TRAIL, 'path': TRAIL, 'footpath': TRAIL, 'pathway': TRAIL,
+                            'sword': SWORD, 'weapon': SWORD, 'boat': BOAT, 'ship': BOAT, 
+                            'raft': BOAT, 'drink': DRINK, 'sip': DRINK, 'taste': DRINK,
+                            'health': HEALTH, 'status': HEALTH, 'jump': JUMP, 'hop': JUMP,
+                            'spring': JUMP, 'leap': JUMP, 'continue': CONTINUE, 
+                            'retrieve': RETRIEVE, 'fetch': RETRIEVE, 'salvage': RETRIEVE, 
+                            'punch': SWIPE, 'swipe': SWIPE, 'hit': SWIPE, 'kick': KICK, 
+                            'bite': BITE, 'fight': FIGHT, 'attack': ATTACK, 
+                            'tunnel': TUNNEL, 'towel': TOWEL, 'quit': QUIT,
+                            'medpack': MEDPACK, 'give': GIVE, 'deliver': GIVE, 
+                            'present': GIVE, 'gift': GIVE, 'eat': EAT, 
+                            'treat': EAT, 'gobble': EAT, 'gorge': EAT, 
+                            'headlamp': HEADLAMP, 'swim': SWIM, 'ball': BALL}
+                            
+                            
     def parse_command(self, sentence):
         words = self.clean_text(sentence)
         
@@ -133,7 +159,7 @@ class Scene(object):
             action = RUN
         elif 'stand' in words:
             action = STAND
-        elif any(w in words for w in ('find', 'track down')):
+        elif any(w in words for w in ('find', 'track')):
             action = FIND
         elif any(w in words for w in ( 'inside', 'indoors')):
             action = INSIDE
@@ -141,7 +167,7 @@ class Scene(object):
                                         'back')):
             action = BACK
         elif any(w in words for w in ('onward', 'forward',
-                                       'ahead', 'on')):
+                                       'ahead')):
             action = FORWARD
         elif any(w in words for w in ('items', 'display')):
             action = ITEMS
