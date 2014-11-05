@@ -1,47 +1,25 @@
 # Piet's fantasy adventure
 
 import time
-from scene import *
-from introduction import *
-from livingroom import *
-from backyard import *
-from enchantedforest import *
-from clearing import *
-from trail import *
-from tunnel import *
-from insidetunnel import *
-from enchantedforestparttwo import *
-from river import *
-from dogpark import *
-from fight import *
-from home import *
-from death import *
-from characters import *
-
-def cool_print(text):
-    for i in text: 
-        sys.stdout.write(i)
-        sys.stdout.flush()
-        time.sleep(0)   
-    print   
- 
+import scenes as sc
+from characters import Player, Villain
     
 class Map(object):
-    scenes = {'introduction': Introduction(),
-              'living_room': LivingRoom(),
-              'living_room2': LivingRoom2(),
-              'backyard': Backyard(),
-              'enchantedforest': EnchantedForest(),
-              'clearing' : Clearing(),
-              'trail' : Trail(),
-              'tunnel': Tunnel(),
-              'inside_tunnel' : InsideTunnel(),
-              'enchantedforest_2': EnchantedForestPartTwo(),
-              'river': River(),
-              'dogpark': DogPark(),
-              'death': Death(),
-              'fight': Fight(),
-              'home': Home()
+    scenes = {'introduction': sc.Introduction(),
+              'living_room': sc.LivingRoom(),
+              'living_room2': sc.LivingRoom2(),
+              'backyard': sc.Backyard(),
+              'enchantedforest': sc.EnchantedForest(),
+              'clearing' : sc.Clearing(),
+              'trail' : sc.Trail(),
+              'tunnel': sc.Tunnel(),
+              'inside_tunnel' : sc.InsideTunnel(),
+              'enchantedforest_2': sc.EnchantedForestPartTwo(),
+              'river': sc.River(),
+              'dogpark': sc.DogPark(),
+              'death': sc.Death(),
+              'fight': sc.Fight(),
+              'home': sc.Home()
               }
               
     def __init__(self, start_scene):
