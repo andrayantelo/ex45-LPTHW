@@ -106,7 +106,6 @@ class Scene(object):
         
     def parse_command(self, sentence):
         words = self.clean_text(sentence)
-        print "WORDS:", words
         
         #default action 
         action = 'None'
@@ -192,7 +191,7 @@ class Scene(object):
             action = SWIM
         elif 'ball' in words:
             action = BALL
-        print action
+        
         return action
         
     def process_action(self, command, player):
