@@ -52,11 +52,41 @@ class LivingRoom(sc.Scene):
         self.dig_text = textwrap.dedent("""
         There is nowhere to dig!"""
         )
+        self.gather_text = textwrap.dedent(""" 
+                The only thing around to pick up is the wristwatch. Piet gingerly
+                grasps it in his mouth and places it in his dog purse which he
+                wears around his neck.
+                 """)
+        self.original_sniff = self.sniff_text
+        self.sniff_text = textwrap.dedent("""
+                Piet sniffs around the living room and finds a medpack
+                hidden behind the couch. He places it in his purse.
+                """)
         self.items = ['medpack', 'wristwatch']
-        self.amount_sniff_commands = []
-        self.amount_gather_commands = []
+        self.enter = self.enter1
         
-    def enter(self, player):
+    def exit_livingroom(self):
+
+        self.living_text = textwrap.dedent("""
+        Piet is back in the living room.
+        """)
+        self.wristwatch_text = textwrap.dedent("""
+        Piet grabs his owner's wristwatch and places it in his purse.""")
+        self.gather_text = textwrap.dedent("""
+        Piet picks up his toy and places it in his purse.""")
+        self.look_text = textwrap.dedent("""
+        Piet looks out the window and sees the cat staring back at him.
+        """)
+        self.jump_text = textwrap.dedent("""
+        Piet musters up all of his strength and sprints
+        forward leaping out the open window.
+        """)
+        self.sniff_text = textwrap.dedent("""
+                Piet finds a hidden treat!""")
+        self.items += ['ball', 'treat']
+        self.enter = self.enter2
+        
+    def enter1(self, player):
         super(LivingRoom, self).enter(player)
         
         cool_print(self.living_text)
@@ -67,27 +97,55 @@ class LivingRoom(sc.Scene):
         
             action = self.parse_command(command)
             
-            if action == sc.SNIFF and len(self.amount_sniff_commands) < 1:
-                self.amount_sniff_commands.append(1)
-                print textwrap.dedent("""
-                Piet sniffs around the living room and finds a medpack
-                hidden behind the couch. He places it in his purse.
-                """)
+            if action == sc.SNIFF and 'medpack' in self.items:
+                self.items.remove('medpack')
                 player.items.append('medpack')
-                continue
             
-            if action == sc.GATHER and len(self.amount_gather_commands) < 1:
-                self.amount_gather_commands.append(1)
-                print textwrap.dedent(""" 
-                The only thing around to pick up is the wristwatch. Piet gingerly
-                grasps it in his mouth and places it in his dog purse which he
-                wears around his neck.
-                 """)
+            elif action == sc.GATHER and 'wristwatch' in self.items:
+                self.items.remove('wristwatch')
                 player.items.append('wristwatch')
-                continue
                 
             self.process_action(command, player)
             
             if action == sc.JUMP:
+                self.exit_livingroom()
                 return 'backyard'
+                
+    def enter2(self, player):
+        super(LivingRoom, self).enter(player)
+        
+        
+        while True:
+            command = str(raw_input("Type a command.\n> "))
+            
+        
+            action = self.parse_command(command)
+            
+            if action == sc.SNIFF and 'treat' in self.items:
+                self.items.remove('treat')
+                player.items.append('treat')
+                self.process_action(command, player)
+                self.sniff_text = self.original_sniff
+            
+            elif action == sc.GATHER:
+                if 'wristwatch' not in player.items:
+                    print self.wristwatch_text
+                    player.items.append('wristwatch')
+                    self.process_action(command, player)
+                else:
+                    self.process_action(command, player)
+                    player.items.append('ball')
+                    self.process_action(command, player)
+            
+            else:
+                self.process_action(command, player)
+                    
+            if action == sc.JUMP:
+                return 'backyard'
+                
+         
+                
+                
+            
+
                 

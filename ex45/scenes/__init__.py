@@ -1,6 +1,5 @@
 from introduction import Introduction
 from livingroom import LivingRoom
-from livingroom2 import LivingRoom2
 from backyard import Backyard
 from enchantedforest import EnchantedForest
 from clearing import Clearing

@@ -81,6 +81,6 @@ class Backyard(sc.Scene):
             elif action == sc.NOTHING:
                 return 'death'
             elif action == sc.INSIDE:
-                return 'living_room2'
+                return 'living_room'
             elif action in [sc.FIGHT, sc.SWIPE, sc.ATTACK, sc.KICK, sc.BITE, sc.CONTINUE]:
                 return 'fight'
