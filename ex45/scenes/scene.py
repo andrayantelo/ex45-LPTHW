@@ -5,7 +5,7 @@ from ..keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
                        GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
-                       TOWEL, MEDPACK, GIVE, EAT, HEADLAMP, BALL)
+                       TOWEL, MEDPACK, GIVE, EAT, HEADLAMP, BALL, CHEW)
 import string
 from ..utils import cool_print
 
@@ -91,6 +91,8 @@ class Scene(object):
         Don't forget to bring your towel!""")
         self.give_text = textwrap.dedent("""
         Piet has nothing but love to give.""")
+        self.chew_text = textwrap.dedent("""
+        Piet chews on his paws.""")
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -104,31 +106,7 @@ class Scene(object):
         
         return words
         
-        verb_dictionary = { 'look': LOOK, 'nothing': NOTHING, 'pick': GATHER,
-                            'grab': GATHER, 'lift': GATHER, 'gather' GATHER,
-                            'sniff': SNIFF, 'smell': SNIFF, 'scent': SNIFF,
-                            'inhale': SNIFF, 'chew': CHEW, 'play': PLAY, 
-                            'dig': DIG, 'bark': BARK, 'roll': ROLL, 'rollover': ROLL,
-                            'walk': WALK, 'stroll': WALK, 'step': WALK, 'march': WALK,
-                            'run': RUN, 'sprint': RUN, 'race': RUN, 'dash': DASH, 
-                            'stand': STAND, 'find': FIND, 'track': find, 'inside': INSIDE,
-                            'indoors': INSIDE, 'return': BACK, 'retreat': BACK, 'back': BACK,
-                            'onward': FORWARD, 'forward': FORWARD, 'ahead': FORWARD,
-                            'items': ITEMS, 'display': ITEMS, 'enter': IN, 'in': IN, 
-                            'trail': TRAIL, 'path': TRAIL, 'footpath': TRAIL, 'pathway': TRAIL,
-                            'sword': SWORD, 'weapon': SWORD, 'boat': BOAT, 'ship': BOAT, 
-                            'raft': BOAT, 'drink': DRINK, 'sip': DRINK, 'taste': DRINK,
-                            'health': HEALTH, 'status': HEALTH, 'jump': JUMP, 'hop': JUMP,
-                            'spring': JUMP, 'leap': JUMP, 'continue': CONTINUE, 
-                            'retrieve': RETRIEVE, 'fetch': RETRIEVE, 'salvage': RETRIEVE, 
-                            'punch': SWIPE, 'swipe': SWIPE, 'hit': SWIPE, 'kick': KICK, 
-                            'bite': BITE, 'fight': FIGHT, 'attack': ATTACK, 
-                            'tunnel': TUNNEL, 'towel': TOWEL, 'quit': QUIT,
-                            'medpack': MEDPACK, 'give': GIVE, 'deliver': GIVE, 
-                            'present': GIVE, 'gift': GIVE, 'eat': EAT, 
-                            'treat': EAT, 'gobble': EAT, 'gorge': EAT, 
-                            'headlamp': HEADLAMP, 'swim': SWIM, 'ball': BALL}
-                            
+
                             
     def parse_command(self, sentence):
         words = self.clean_text(sentence)
@@ -144,7 +122,7 @@ class Scene(object):
             action = GATHER
         elif any(w in words for w in ('sniff', 'smell', 'scent', 'inhale')):
             action = SNIFF
-        elif any(w in words for w in ('chew', 'play')):
+        elif 'play' in words:
             action = PLAY
         elif 'dig' in words:
             action = DIG
@@ -217,6 +195,8 @@ class Scene(object):
             action = SWIM
         elif 'ball' in words:
             action = BALL
+        elif 'chew' in words:
+            action = CHEW
         
         return action
         
@@ -299,6 +279,8 @@ class Scene(object):
             player.use_headlamp()
         elif action == BALL:
             player.use_ball()
+        elif action == CHEW:
+            cool_print(self.chew_text)
         elif action == 'None':
             print "Try another command."
             
@@ -306,3 +288,87 @@ class Scene(object):
         player.player_in_dark = False
         player.health_status()
         player.display_items()
+
+
+verb_dictionary = { 'look': LOOK, 
+                    'nothing': NOTHING, 
+                    'pick': GATHER,
+                    'grab': GATHER, 
+                    'lift': GATHER, 
+                    'gather': GATHER,
+                    'sniff': SNIFF, 
+                    'smell': SNIFF, 
+                    'scent': SNIFF,
+                    'inhale': SNIFF, 
+                    'chew': CHEW, 
+                    'play': PLAY, 
+                    'dig': DIG, 
+                    'bark': BARK, 
+                    'roll': ROLL, 
+                    'rollover': ROLL,
+                    'walk': WALK, 
+                    'stroll': WALK, 
+                    'step': WALK, 
+                    'march': WALK,
+                    'run': RUN, 
+                    'sprint': RUN, 
+                    'race': RUN, 
+                    'stand': STAND, 
+                    'find': FIND, 
+                    'track': FIND, 
+                    'inside': INSIDE,
+                    'indoors': INSIDE,
+                    'return': BACK, 
+                    'retreat': BACK, 
+                    'back': BACK,
+                    'onward': FORWARD, 
+                    'forward': FORWARD, 
+                    'ahead': FORWARD,
+                    'items': ITEMS, 
+                    'display': ITEMS, 
+                    'enter': ENTER, 
+                    'in': ENTER, 
+                    'trail': TRAIL, 
+                    'path': TRAIL, 
+                    'footpath': TRAIL, 
+                    'pathway': TRAIL,
+                    'sword': SWORD, 
+                    'weapon': SWORD,
+                    'boat': BOAT, 
+                    'ship': BOAT, 
+                    'raft': BOAT, 
+                    'drink': DRINK,
+                    'sip': DRINK, 
+                    'taste': DRINK,
+                    'health': HEALTH, 
+                    'status': HEALTH, 
+                    'jump': JUMP, 
+                    'hop': JUMP,
+                    'spring': JUMP, 
+                    'leap': JUMP, 
+                    'continue': CONTINUE, 
+                    'retrieve': RETRIEVE, 
+                    'fetch': RETRIEVE, 
+                    'salvage': RETRIEVE, 
+                    'punch': SWIPE, 
+                    'swipe': SWIPE, 
+                    'hit': SWIPE,
+                    'kick': KICK, 
+                    'bite': BITE, 
+                    'fight': FIGHT, 
+                    'attack': ATTACK, 
+                    'tunnel': TUNNEL, 
+                    'towel': TOWEL, 
+                    'quit': QUIT,
+                    'medpack': MEDPACK, 
+                    'give': GIVE, 
+                    'deliver': GIVE, 
+                    'present': GIVE, 
+                    'gift': GIVE, 
+                    'eat': EAT, 
+                    'treat': EAT, 
+                    'gobble': EAT, 
+                    'gorge': EAT, 
+                    'headlamp': HEADLAMP, 
+                    'swim': SWIM, 
+                    'ball': BALL}

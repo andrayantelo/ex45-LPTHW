@@ -41,7 +41,7 @@ GIVE = 'give'
 EAT = 'eat'
 HEADLAMP = 'headlamp'
 BALL = 'ball'
-
+CHEW = 'chew'
 
 
 
