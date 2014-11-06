@@ -41,30 +41,8 @@ GIVE = 'give'
 EAT = 'eat'
 HEADLAMP = 'headlamp'
 BALL = 'ball'
-#self.command_dictionary = {SNIFF: self.sniff_text,
-#                                   LOOK: self.look_text,
-#                                   NOTHING: self.nothing_text,
-#                                   PLAY: self.play_text,
-#                                   DIG: self.dig_text,
-#                                   BARK: self.bark_text,
-#                                   ROLL: self.roll_text,
-#                                   WALK: self.walk_text,
-#                                   RUN: self.run_text,
-#                                   STAND: self.stand_text,
-#                                   FIND: self.find_text,
-#                                   INSIDE: self.inside_text,
-#                                   BACK: self.back_text,
-#                                   FORWARD: self.forward_text,
-#                                   ITEMS: self.display_items_text,
-#                                   ENTER: self.enter_tunneltext,
-#                                   TRAIL: self.trail_text,
-#                                   SWORD: self.use_sword,
-#                                   SWIM: self.swim_text,
-#                                   BOAT: self.use_boat,
-#                                   DRINK: self.drink_water,
-#                                   HEALTH: Player.health_status,
-#                                   ITEMS: 2
-#                                    }
+CHEW = 'chew'
+COUCH = 'couch'
 
 
 

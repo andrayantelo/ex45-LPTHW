@@ -5,7 +5,7 @@ from ..keywords import (SNIFF, LOOK, NOTHING, PLAY, DIG, BARK, ROLL, WALK,
                        BACK, FORWARD, ITEMS, ENTER, TRAIL, SWORD, SWIM, 
                        BOAT, DRINK, HEALTH, ITEMS, CONTINUE, JUMP, RETRIEVE,
                        GATHER, SWIPE, KICK, BITE, FIGHT,ATTACK, TUNNEL, QUIT,
-                       TOWEL, MEDPACK, GIVE, EAT, HEADLAMP, BALL)
+                       TOWEL, MEDPACK, GIVE, EAT, HEADLAMP, BALL, CHEW, COUCH)
 import string
 from ..utils import cool_print
 
@@ -91,6 +91,10 @@ class Scene(object):
         Don't forget to bring your towel!""")
         self.give_text = textwrap.dedent("""
         Piet has nothing but love to give.""")
+        self.chew_text = textwrap.dedent("""
+        Piet chews on his paws.""")
+        self.couch_text = textwrap.dedent("""
+        Piet is not allowed on the couch.""")
         self.command_dictionary = {}
         
     def clean_text(self, sentence):
@@ -98,100 +102,107 @@ class Scene(object):
         sentence = sentence.lower()
         words = sentence.split()
         
-        stop_words = ['a','the','an','and','at','that', 'watch']
+        stop_words = ['a','the','an','and','at','that', 'watch', 'on', 'up',
+                      'off','down', 'the', 'around', 'out', 'window', 'with']
         words = [w for w in words if w not in stop_words]
         
         return words
         
-        
+
+                            
     def parse_command(self, sentence):
         words = self.clean_text(sentence)
+        print words 
         
-        #default action 
-        action = 'None'
-        
-        if 'look' in words:
-            action = LOOK
-        elif 'nothing' in words:
-            action = NOTHING
-        elif any(w in words for w in ('pick', 'grab', 'lift', 'gather')):
-            action = GATHER
-        elif any(w in words for w in ('sniff', 'smell', 'scent', 'inhale')):
-            action = SNIFF
-        elif any(w in words for w in ('chew', 'play')):
-            action = PLAY
-        elif 'dig' in words:
-            action = DIG
-        elif 'bark' in words:
-            action = BARK
-        elif any(w in words for w in ('roll', 'rollover')):
-            action = ROLL
-        elif any(w in words for w in ('walk', 'stroll', 'step', 'march',
-                                       'hike')):
-            action = WALK
-        elif any(w in words for w in ('run', 'sprint', 'race', 'dash')):
-            action = RUN
-        elif 'stand' in words:
-            action = STAND
-        elif any(w in words for w in ('find', 'track down')):
-            action = FIND
-        elif any(w in words for w in ( 'inside', 'indoors')):
-            action = INSIDE
-        elif any(w in words for w in ('return', 'retreat',
-                                        'back')):
-            action = BACK
-        elif any(w in words for w in ('onward', 'forward',
-                                       'ahead', 'on')):
-            action = FORWARD
-        elif any(w in words for w in ('items', 'display')):
-            action = ITEMS
-        elif any(w in words for w in ('enter', 'in')):
-            action = ENTER
-        elif any(w in words for w in ('trail', 'path', 'footpath', 'pathway')):
-            action = TRAIL
-        elif any(w in words for w in ('sword', 'weapon')):
-            action = SWORD
-        elif any(w in words for w in ('boat', 'ship', 'raft')):
-            action = BOAT
-        elif any(w in words for w in ('drink', 'sip', 'taste')):
-            action = DRINK
-        elif any(w in words for w in ('health', 'status')):
-            action = HEALTH
-        elif any(w in words for w in ('jump', 'hop', 'spring', 'leap')):
-            action = JUMP
-        elif 'continue' in words:
-            action = CONTINUE
-        elif any(w in words for w in ('retrieve', 'fetch', 'salvage')):
-            action = RETRIEVE
-        elif any(w in words for w in ('punch', 'swipe', 'hit')):
-            action = SWIPE
-        elif 'kick' in words:
-            action = KICK
-        elif 'bite' in words:
-            action = BITE
-        elif 'fight' in words:
-            action = FIGHT
-        elif 'attack' in words:
-            action = ATTACK
-        elif 'tunnel' in words:
-            action = TUNNEL
-        elif 'quit' in words:
-            action = QUIT
-        elif 'towel' in words:
-            action = TOWEL
-        elif 'medpack' in words:
-            action = MEDPACK
-        elif any(w in words for w in ('give', 'deliver', 'present', 'gift')):
-            action = GIVE
-        elif any(w in words for w in ('eat', 'treat', 'gobble', 'gorge')):
-            action = EAT
-        elif 'headlamp' in words:
-            action = HEADLAMP
-        elif 'swim' in words:
-            action = SWIM
-        elif 'ball' in words:
-            action = BALL
-        
+        verb_dictionary = { 'look': LOOK, 
+                    'nothing': NOTHING, 
+                    'pick': GATHER,
+                    'grab': GATHER, 
+                    'lift': GATHER, 
+                    'gather': GATHER,
+                    'sniff': SNIFF, 
+                    'smell': SNIFF, 
+                    'scent': SNIFF,
+                    'inhale': SNIFF, 
+                    'chew': CHEW, 
+                    'play': PLAY, 
+                    'dig': DIG, 
+                    'bark': BARK, 
+                    'roll': ROLL, 
+                    'rollover': ROLL,
+                    'walk': WALK, 
+                    'stroll': WALK, 
+                    'step': WALK, 
+                    'march': WALK,
+                    'run': RUN, 
+                    'sprint': RUN, 
+                    'race': RUN, 
+                    'stand': STAND, 
+                    'find': FIND, 
+                    'track': FIND, 
+                    'inside': INSIDE,
+                    'indoors': INSIDE,
+                    'return': BACK, 
+                    'retreat': BACK, 
+                    'back': BACK,
+                    'onward': FORWARD, 
+                    'forward': FORWARD, 
+                    'ahead': FORWARD,
+                    'items': ITEMS, 
+                    'display': ITEMS, 
+                    'enter': ENTER, 
+                    'in': ENTER, 
+                    'trail': TRAIL, 
+                    'path': TRAIL, 
+                    'footpath': TRAIL, 
+                    'pathway': TRAIL,
+                    'sword': SWORD, 
+                    'weapon': SWORD,
+                    'boat': BOAT, 
+                    'ship': BOAT, 
+                    'raft': BOAT, 
+                    'drink': DRINK,
+                    'sip': DRINK, 
+                    'taste': DRINK,
+                    'health': HEALTH, 
+                    'status': HEALTH, 
+                    'jump': JUMP, 
+                    'hop': JUMP,
+                    'spring': JUMP, 
+                    'leap': JUMP, 
+                    'continue': CONTINUE, 
+                    'retrieve': RETRIEVE, 
+                    'fetch': RETRIEVE, 
+                    'salvage': RETRIEVE, 
+                    'punch': SWIPE, 
+                    'swipe': SWIPE, 
+                    'hit': SWIPE,
+                    'kick': KICK, 
+                    'bite': BITE, 
+                    'fight': FIGHT, 
+                    'attack': ATTACK, 
+                    'tunnel': TUNNEL, 
+                    'towel': TOWEL, 
+                    'quit': QUIT,
+                    'medpack': MEDPACK, 
+                    'give': GIVE, 
+                    'deliver': GIVE, 
+                    'present': GIVE, 
+                    'gift': GIVE, 
+                    'eat': EAT, 
+                    'treat': EAT, 
+                    'gobble': EAT, 
+                    'gorge': EAT, 
+                    'headlamp': HEADLAMP, 
+                    'swim': SWIM, 
+                    'ball': BALL,
+                    'couch': COUCH}
+        for word in words:
+            
+            action = verb_dictionary.get(word)
+     
+            
+        print action
         return action
         
     def process_action(self, command, player):
@@ -273,6 +284,10 @@ class Scene(object):
             player.use_headlamp()
         elif action == BALL:
             player.use_ball()
+        elif action == CHEW:
+            cool_print(self.chew_text)
+        elif action == COUCH:
+            cool_print(self.couch_text)
         elif action == 'None':
             print "Try another command."
             
@@ -280,3 +295,4 @@ class Scene(object):
         player.player_in_dark = False
         player.health_status()
         player.display_items()
+
