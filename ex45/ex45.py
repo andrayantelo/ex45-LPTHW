@@ -7,7 +7,6 @@ from characters import Player, Villain
 class Map(object):
     scenes = {'introduction': sc.Introduction(),
               'living_room': sc.LivingRoom(),
-              'living_room2': sc.LivingRoom2(),
               'backyard': sc.Backyard(),
               'enchantedforest': sc.EnchantedForest(),
               'clearing' : sc.Clearing(),
