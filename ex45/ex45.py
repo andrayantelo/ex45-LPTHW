@@ -5,23 +5,22 @@ import scenes as sc
 from characters import Player, Villain
     
 class Map(object):
-    scenes = {'introduction': sc.Introduction(),
-              'living_room': sc.LivingRoom(),
-              'backyard': sc.Backyard(),
-              'enchantedforest': sc.EnchantedForest(),
-              'clearing' : sc.Clearing(),
-              'trail' : sc.Trail(),
-              'tunnel': sc.Tunnel(),
-              'inside_tunnel' : sc.InsideTunnel(),
-              'enchantedforest_2': sc.EnchantedForestPartTwo(),
-              'river': sc.River(),
-              'dogpark': sc.DogPark(),
-              'death': sc.Death(),
-              'fight': sc.Fight(),
-              'home': sc.Home()
-              }
-              
     def __init__(self, start_scene):
+        self.scenes = {'introduction': sc.Introduction(),
+                  'living_room': sc.LivingRoom(),
+                  'backyard': sc.Backyard(),
+                  'enchantedforest': sc.EnchantedForest(),
+                  'clearing' : sc.Clearing(),
+                  'trail' : sc.Trail(),
+                  'tunnel': sc.Tunnel(),
+                  'inside_tunnel' : sc.InsideTunnel(),
+                  'enchantedforest_2': sc.EnchantedForestPartTwo(),
+                  'river': sc.River(),
+                  'dogpark': sc.DogPark(),
+                  'death': sc.Death(),
+                  'fight': sc.Fight(),
+                  'home': sc.Home()
+                  }
         self.start_scene = start_scene
       
     def next_scene(self, next_scene):

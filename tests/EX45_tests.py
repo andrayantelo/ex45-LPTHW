@@ -1,5 +1,6 @@
 from nose.tools import *
 from ex45.ex45 import Map
+from ex45.ex45 import Engine
 import ex45.ex45
 import ex45.scenes as sc
 
@@ -22,8 +23,21 @@ def test_map():
 
 def test_start():
     a_map = Map("introduction")
-    a_map.start_scene = sc.Introduction
+    assert_equal(a_map.start_scene, "introduction")
 
+def test_next_scene():
+    a_map = Map("introduction")
+    assert_is_instance(a_map.next_scene("backyard"), sc.Backyard)
+
+def test_opening_scene():
+    a_map = Map("introduction")
+    assert_is_instance(a_map.opening_scene(), sc.Introduction)
+
+def test_engine():
+    a_map = Map("introduction")
+    an_engine = Engine(a_map)
+    assert_is_instance(an_engine.game_map, Map)
+    
 def setup():
     print "SETUP!"
     
