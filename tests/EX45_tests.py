@@ -3,6 +3,7 @@ from ex45.ex45 import Map
 from ex45.ex45 import Engine
 import ex45.ex45
 import ex45.scenes as sc
+from characters import Player
 
 def test_map():
     a_map = Map("introduction")
@@ -37,6 +38,11 @@ def test_engine():
     a_map = Map("introduction")
     an_engine = Engine(a_map)
     assert_is_instance(an_engine.game_map, Map)
+    
+#def test_play():
+#    a_player = Player()
+#    a_map = Map("introduction")
+#    an_engine = Engine(a_map)
     
 def setup():
     print "SETUP!"

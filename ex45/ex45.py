@@ -38,8 +38,8 @@ class Engine(object):
         current_scene = self.game_map.opening_scene()
         
         while True:
-            #if current_scene not in self.game_map.scenes:
-             #   raise ValueError("Scene did not return a valid next scene!")
+            if current_scene not in self.game_map.scenes:
+                raise ValueError("Scene did not return a valid next scene!")
             next_scene_name = current_scene.enter(player)
             current_scene = self.game_map.next_scene(next_scene_name)
             
