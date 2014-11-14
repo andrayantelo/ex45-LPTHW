@@ -20,7 +20,8 @@ class Character(object):
             print heart, empty_heart, empty_heart
         if self.status == 0:
             print empty_heart, empty_heart, empty_heart
-        
+        return self.status
+
 class Player(Character):
     
     def __init__(self):
@@ -55,7 +56,6 @@ class Player(Character):
         
     def use_medpack(self):
         medpack = 'medpack'
-        print " THIS IS WORKING!"
         if medpack in self.items and self.status != 3:
             print "Piet uses a medpack."
             self.status = self.status + 1
